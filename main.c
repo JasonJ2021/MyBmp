@@ -46,7 +46,7 @@ void Main()
 	// unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
 	// int size = sizeof(data);
 	InitGraphics();
-	SetWindowTitle("3D Viewport LibGraphics");
+	SetWindowTitle("MyBmp");
 	// char *s = (char *)malloc(100);
 	// int width = displayGetWindowPixelWidth();
 	// int height = displayGetWindowPixelHeight();
@@ -56,5 +56,5 @@ void Main()
 	// registerTimerEvent(timerCallback);
 	// 15ms为周期，近似于60FPS
 	// startTimer(0, 15);
-	displayPicture("./resource/2.bmp");
+	displayPicture("./resource/1.bmp");
 }

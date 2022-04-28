@@ -120,7 +120,7 @@ void displayPicture(string s){
     {
         // 像素起始指针，指向 rowPtr所在行 的 第N个 像素
         unsigned char *pixPtr = rowPtr;
-        unsigned char *srcPtr = src_Row_Ptr;
+        unsigned char *srcPtr = src_Row_Ptr + src_stride * (frameBuffer.portHeight - 1 );
         for (int col = 0; col < frameBuffer.portWidth; ++col)
         {
             // 逐像素赋颜色值
@@ -138,7 +138,7 @@ void displayPicture(string s){
             pixPtr += 4; // 往右一列
         }
         rowPtr += stride; // 往上一行
-        src_Row_Ptr += src_stride;
+        src_Row_Ptr -= src_stride;
     }
 
     // 将整个viewport标记为需要更新（不是需要擦除）
