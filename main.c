@@ -56,5 +56,11 @@ void Main()
 	// registerTimerEvent(timerCallback);
 	// 15ms为周期，近似于60FPS
 	// startTimer(0, 15);
-	displayPicture("./resource/1.bmp");
+	displayPicture("./resource/2.bmp");
+	// clearPicture();
+	// resizePicture(500 ,500);
+	// displayData();
+	// clearPicture();
+	// resizePicture(100 ,100);
+	// displayData();
 }

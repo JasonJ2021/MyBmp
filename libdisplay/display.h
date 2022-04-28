@@ -2,6 +2,7 @@
 #include "../third_party/stb_image.h"
 #include "../libgraphics/strlib.h"
 
+unsigned char *data;
 /**
  * @brief 以像素为单位获取窗口宽度
  *
@@ -44,4 +45,13 @@ void displayFillWithColor(float r, float g, float b);
  * @param s 完整的文件名 
  */
 void displayPicture(string s);
+
+
+void resizePicture(int output_width , int output_height);
+
+
+void displayData();
+
+
+void clearPicture();
 

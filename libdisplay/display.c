@@ -2,7 +2,9 @@
 #include "../libgraphics/win32Export.h"
 
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "../third_party/stb_image.h"
+#include "../third_party/stb_image_resize.h"
 
 static HBITMAP oldBitmap = NULL, bitmap = NULL;
 
@@ -106,8 +108,22 @@ void displayFillWithColor(float r, float g, float b)
 
 void displayPicture(string s){
     int width , height , n ;
-	unsigned char *data = stbi_load(s , &width , &height , &n , 4);
+	data = stbi_load(s , &width , &height , &n , 4);
     displayViewPort(0,0 , width , height);
+    displayData();
+}
+
+
+void resizePicture(int output_width , int output_height){
+    unsigned char * temp_data = (unsigned char *)malloc(output_width * output_height * 4);
+    stbir_resize_uint8(data , frameBuffer.portWidth , frameBuffer.portHeight,0,temp_data , output_width,output_height,0,4);
+    stbi_image_free(data);
+    data = temp_data;
+    frameBuffer.portWidth = output_width;
+    frameBuffer.portHeight = output_height;
+}
+
+void displayData(){
     // 步长，每跨一步相当于往上一行
     int stride = frameBuffer.windowsWidth * 4;
     int src_stride = frameBuffer.portWidth*4;
@@ -153,4 +169,9 @@ void displayPicture(string s){
         };
         InvalidateRect(GetDisPlayWindows(), &viewportRECT, FALSE); // FALSE注意！
     }
+}
+
+
+void clearPicture(){
+    displayFillWithColor(0,0,0);
 }
