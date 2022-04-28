@@ -19,6 +19,9 @@
     <Filter Include="源文件\libdisplay">
       <UniqueIdentifier>{651a250a-0d26-48a6-a6a2-f8ef2550f64d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\third_party">
+      <UniqueIdentifier>{6615677a-d10c-4a9b-890d-4bd8f6fc1b02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libgraphics\exceptio.c">
@@ -82,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="libdisplay\display.h">
       <Filter>源文件\libdisplay</Filter>
+    </ClInclude>
+    <ClInclude Include="third_party\stb_image.h">
+      <Filter>源文件\third_party</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

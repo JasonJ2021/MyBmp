@@ -1,10 +1,14 @@
 #pragma once
+#include "../third_party/stb_image.h"
+#include "../libgraphics/strlib.h"
+
 /**
  * @brief 以像素为单位获取窗口宽度
  *
  * @return int 窗口宽度
  */
 int displayGetWindowPixelWidth();
+
 
 /**
  * @brief 以像素为单位获取窗口高度
@@ -31,3 +35,13 @@ void displayViewPort(int x, int y, int width, int height);
  * @param b
  */
 void displayFillWithColor(float r, float g, float b);
+
+
+
+/**
+ * @brief 显示一张图片
+ * 
+ * @param s 完整的文件名 
+ */
+void displayPicture(string s);
+

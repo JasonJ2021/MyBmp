@@ -42,10 +42,19 @@ void Main()
 	double w = GetFullScreenWidth();
 	double h = GetFullScreenHeight();
 	SetWindowSize(w, h);
-
+	int x , y , n ;
+	// unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
+	// int size = sizeof(data);
 	InitGraphics();
 	SetWindowTitle("3D Viewport LibGraphics");
-	registerTimerEvent(timerCallback);
+	// char *s = (char *)malloc(100);
+	// int width = displayGetWindowPixelWidth();
+	// int height = displayGetWindowPixelHeight();
+	// sprintf(s , "x = %d , y = %d , n = %d size = %d width = %d , height = %d" , x , y, n , size , width , height);
+	// MovePen(1,1);
+	// DrawTextString(s);
+	// registerTimerEvent(timerCallback);
 	// 15ms为周期，近似于60FPS
-	startTimer(0, 15);
+	// startTimer(0, 15);
+	displayPicture("./resource/2.bmp");
 }
