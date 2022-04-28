@@ -22,7 +22,7 @@
 #include "gcalloc.h"
 #include "strlib.h"
 #include "extgraph.h"
-
+#include "win32Export.h"
 /*
  * Parameters
  * ----------
@@ -1072,9 +1072,9 @@ static LONG FAR PASCAL GraphicsEventProc(HWND hwnd, UINT msg,
 {
     switch(msg)
     {
-		// ÁõÐÂ¹ú£ºÊ¹ÓÃÁËdouble buffer, ÊÖ¶¯ÇåÆÁ£¬
-		//         ºöÂÔ²Á³ý±³¾°ÏûÏ¢£¬±ÜÃâÉÁË¸
-		//         ¸ÐÐ»18¼¶Ê¯ÃÉÍ¬Ñ§£¬Ìá¹©Õâ¸ö·½·¨½â¾öË¢ÐÂÉÁË¸ÎÊÌâ
+		// ï¿½ï¿½ï¿½Â¹ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½double buffer, ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//         ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¸
+		//         ï¿½ï¿½Ð»18ï¿½ï¿½Ê¯ï¿½ï¿½Í¬Ñ§ï¿½ï¿½ï¿½á¹©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½ï¿½ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½
 		case WM_ERASEBKGND: 
 			return 0; 
 
@@ -2002,3 +2002,19 @@ double ScaleYInches(int y)/*y coordinate from pixels to inches*/
 {
  	  return GetWindowHeight()-(double)y/GetYResolution();
 } 	   
+
+HWND GetDisPlayWindows(){
+    return graphicsWindow;
+}
+
+
+HDC GetDisplayOSDC(){
+    return osdc;
+}
+
+int GetWindowPixelWidth(){
+    return pixelWidth;
+}
+int GetWindowPixelHeight(){
+    return pixelHeight;
+}

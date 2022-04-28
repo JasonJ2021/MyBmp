@@ -181,4 +181,5 @@ void cancelCharEvent();
 void cancelMouseEvent();
 void cancelTimerEvent();
 
+void startTimer(int id, int timeinterval);
 #endif

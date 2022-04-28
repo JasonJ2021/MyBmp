@@ -124,6 +124,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bmp.c" />
+    <ClCompile Include="libdisplay\display.c" />
     <ClCompile Include="libgraphics\exceptio.c" />
     <ClCompile Include="libgraphics\genlib.c" />
     <ClCompile Include="libgraphics\graphics.c" />
@@ -133,6 +135,8 @@
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bmp.h" />
+    <ClInclude Include="libdisplay\display.h" />
     <ClInclude Include="libgraphics\exception.h" />
     <ClInclude Include="libgraphics\extgraph.h" />
     <ClInclude Include="libgraphics\gcalloc.h" />
@@ -141,6 +145,7 @@
     <ClInclude Include="libgraphics\random.h" />
     <ClInclude Include="libgraphics\simpio.h" />
     <ClInclude Include="libgraphics\strlib.h" />
+    <ClInclude Include="win32Export.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -16,6 +16,9 @@
     <Filter Include="源文件\libgraphics">
       <UniqueIdentifier>{c3a4702b-0e90-46d1-beba-9f686644d14f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\libdisplay">
+      <UniqueIdentifier>{651a250a-0d26-48a6-a6a2-f8ef2550f64d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libgraphics\exceptio.c">
@@ -37,7 +40,13 @@
       <Filter>源文件\libgraphics</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
-      <Filter>源文件\libgraphics</Filter>
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="bmp.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="libdisplay\display.c">
+      <Filter>源文件\libdisplay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +73,15 @@
     </ClInclude>
     <ClInclude Include="libgraphics\strlib.h">
       <Filter>源文件\libgraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="bmp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="win32Export.h">
+      <Filter>源文件\libgraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="libdisplay\display.h">
+      <Filter>源文件\libdisplay</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
