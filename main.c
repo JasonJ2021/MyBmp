@@ -55,11 +55,20 @@ void Main()
 	// DrawTextString(s);
 	// registerTimerEvent(timerCallback);
 	// 15ms为周期，近似于60FPS
-	// startTimer(0, 15);
-	displayPicture("./resource/2.bmp");
+	// // startTimer(0, 15);
+	displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
+
+	// 初始化窗口设置背景颜色为白色
+	displayFillWithColor(255,255,255);
+	
+	// displayPicture("./resource/2.bmp");
 	// clearPicture();
-	// resizePicture(500 ,500);
-	// displayData();
+	displayPicture("./resource/2.bmp");
+	// displayPicture("./resource/2.bmp");
+	// displayPicture("./resource/2.bmp");
+	clearPicture();
+	resizePicture(500 ,500);
+	displayData();
 	// clearPicture();
 	// resizePicture(100 ,100);
 	// displayData();

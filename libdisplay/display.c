@@ -173,5 +173,5 @@ void displayData(){
 
 
 void clearPicture(){
-    displayFillWithColor(0,0,0);
+    displayFillWithColor(255,255,255);
 }
