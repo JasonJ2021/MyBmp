@@ -50,7 +50,7 @@ void displayViewPort(int x, int y, int width, int height)
         oldBitmap = (HBITMAP)SelectObject(GetDisplayOSDC(), bitmap);
         frameBuffer.data = (unsigned char *)ptr;
         frameBuffer.portWidth = frameBuffer.windowsWidth;
-		frameBuffer.portHeight = frameBuffer.windowsHeight;
+        frameBuffer.portHeight = frameBuffer.windowsHeight;
     }
     // 检查图片是否超出窗口
     frameBuffer.portX = x < 0 ? 0 : x;
@@ -67,8 +67,6 @@ void displayViewPort(int x, int y, int width, int height)
     tmp = frameBuffer.portY + height;
     frameBuffer.portHeight = (tmp > frameBuffer.windowsHeight ? frameBuffer.windowsHeight : tmp) - frameBuffer.portY;
 }
-
-
 
 void displayFillWithColor(float r, float g, float b)
 {
@@ -109,30 +107,33 @@ void displayFillWithColor(float r, float g, float b)
     }
 }
 
-void readInPicture(string s){
-    int  n ;
-	data = stbi_load(s , &picture_width , &picture_height , &n , 4);
+void readInPicture(string s)
+{
+    int n;
+    data = stbi_load(s, &picture_width, &picture_height, &n, 4);
 }
 
-void displayPicture(void){
-    displayViewPort(0,0 , picture_width , picture_height);
+void displayPicture(void)
+{
+    displayViewPort(0, 0, picture_width, picture_height);
     displayData();
 }
 
-
-void resizePicture(int output_width , int output_height){
-    unsigned char * temp_data = (unsigned char *)malloc(output_width * output_height * 4);
-    stbir_resize_uint8(data , frameBuffer.portWidth , frameBuffer.portHeight,0,temp_data , output_width,output_height,0,4);
+void resizePicture(int output_width, int output_height)
+{
+    unsigned char *temp_data = (unsigned char *)malloc(output_width * output_height * 4);
+    stbir_resize_uint8(data, frameBuffer.portWidth, frameBuffer.portHeight, 0, temp_data, output_width, output_height, 0, 4);
     stbi_image_free(data);
     data = temp_data;
     picture_width = output_width;
     picture_height = output_height;
 }
 
-void displayData(){
+void displayData()
+{
     // 步长，每跨一步相当于往上一行
     int stride = frameBuffer.windowsWidth * 4;
-    int src_stride = frameBuffer.portWidth*4;
+    int src_stride = frameBuffer.portWidth * 4;
     // 行起始指针，指向当前viewport 第N行 的 第一个像素
     unsigned char *rowPtr = frameBuffer.data + frameBuffer.portY * stride + frameBuffer.portX * 4;
     // 源文件bmp的像素数据起始指针
@@ -142,7 +143,7 @@ void displayData(){
     {
         // 像素起始指针，指向 rowPtr所在行 的 第N个 像素
         unsigned char *pixPtr = rowPtr;
-        unsigned char *srcPtr = src_Row_Ptr + src_stride * (frameBuffer.portHeight - 1 );
+        unsigned char *srcPtr = src_Row_Ptr + src_stride * (frameBuffer.portHeight - 1);
         for (int col = 0; col < frameBuffer.portWidth; ++col)
         {
             // 逐像素赋颜色值
@@ -177,34 +178,35 @@ void displayData(){
     }
 }
 
-
-void clearPicture(){
-    displayViewPort(0 , 0 , picture_width , picture_height);
-    displayFillWithColor(255,255,255);
+void clearPicture()
+{
+    displayViewPort(0, 0, picture_width, picture_height);
+    displayFillWithColor(255, 255, 255);
 }
 
-void left_Rotate_Picture(){
-    unsigned char * temp_data = (unsigned char *)malloc(picture_width * picture_height * 4);
+void left_Rotate_Picture()
+{
+    unsigned char *temp_data = (unsigned char *)malloc(picture_width * picture_height * 4);
 
     // 步长，每跨一步相当于往上一行
     int dst_stride = picture_height * 4;
-    int src_stride = picture_width*4;
-    unsigned char * src_ptr;
-    unsigned char * dst_ptr;
+    int src_stride = picture_width * 4;
+    unsigned char *src_ptr;
+    unsigned char *dst_ptr;
 
     for (int row = 0; row < picture_height; ++row)
     {
-        for(int col = 0 ; col < picture_width ; ++col){
-            src_ptr = data + row*src_stride + col*4;
-            dst_ptr = temp_data + dst_stride*(picture_width - col - 1) + row*4;
-            dst_ptr[0] = src_ptr[0]; 
-            dst_ptr[1] = src_ptr[1];      
+        for (int col = 0; col < picture_width; ++col)
+        {
+            src_ptr = data + row * src_stride + col * 4;
+            dst_ptr = temp_data + dst_stride * (picture_width - col - 1) + row * 4;
+            dst_ptr[0] = src_ptr[0];
+            dst_ptr[1] = src_ptr[1];
             dst_ptr[2] = src_ptr[2];
             dst_ptr[3] = src_ptr[3];
         }
     }
 
-    
     stbi_image_free(data);
     data = temp_data;
     int temp = picture_height;
@@ -212,28 +214,29 @@ void left_Rotate_Picture(){
     picture_width = temp;
 }
 
-void right_Rotate_Picture(){
-    unsigned char * temp_data = (unsigned char *)malloc(picture_width * picture_height * 4);
+void right_Rotate_Picture()
+{
+    unsigned char *temp_data = (unsigned char *)malloc(picture_width * picture_height * 4);
 
     // 步长，每跨一步相当于往上一行
     int dst_stride = picture_height * 4;
-    int src_stride = picture_width*4;
-    unsigned char * src_ptr;
-    unsigned char * dst_ptr;
+    int src_stride = picture_width * 4;
+    unsigned char *src_ptr;
+    unsigned char *dst_ptr;
 
     for (int row = 0; row < picture_height; ++row)
     {
-        for(int col = 0 ; col < picture_width ; ++col){
-            src_ptr = data + row*src_stride + col*4;
-            dst_ptr = temp_data + dst_stride*col + (picture_height - row - 1)*4;
-            dst_ptr[0] = src_ptr[0]; 
-            dst_ptr[1] = src_ptr[1];      
+        for (int col = 0; col < picture_width; ++col)
+        {
+            src_ptr = data + row * src_stride + col * 4;
+            dst_ptr = temp_data + dst_stride * col + (picture_height - row - 1) * 4;
+            dst_ptr[0] = src_ptr[0];
+            dst_ptr[1] = src_ptr[1];
             dst_ptr[2] = src_ptr[2];
             dst_ptr[3] = src_ptr[3];
         }
     }
 
-    
     stbi_image_free(data);
     data = temp_data;
     int temp = picture_height;
@@ -241,7 +244,51 @@ void right_Rotate_Picture(){
     picture_width = temp;
 }
 
-
-void save_Picture(string s ){
+void save_Picture(string s)
+{
     stbi_write_bmp(s, picture_width, picture_height, 4, data, 0);
+}
+
+void cut_Picture(int x_downLeft , int y_downLeft , int x_upRight , int y_upRight)
+{
+    if (x_downLeft > x_upRight)
+    {
+        int temp = x_downLeft;
+        x_downLeft = x_upRight;
+        x_upRight = temp;
+    }
+    if (y_downLeft > y_upRight)
+    {
+        int temp = y_downLeft;
+        y_downLeft = y_upRight;
+        y_upRight = temp;
+    }
+    int output_width = x_upRight - x_downLeft;
+    int output_height = y_upRight - y_downLeft;
+    unsigned char *temp_data = (unsigned char *)malloc(output_width * output_height * 4);
+
+    // 步长，每跨一步相当于往上一行
+    int dst_stride = output_width * 4;
+    int src_stride = picture_width * 4;
+    unsigned char *src_ptr;
+    unsigned char *dst_ptr;
+    // 需要创建一个base_data指针 , 指向src_data中剪切的开始位置
+    unsigned char *base_data = data + src_stride * (picture_height - y_downLeft - output_width - 1 ) + 4 * x_downLeft;
+    for (int row = 0; row < output_width; ++row)
+    {
+        for (int col = 0; col < output_height; ++col)
+        {
+            src_ptr = base_data + row * src_stride + col * 4;
+            dst_ptr = temp_data + row * dst_stride + col * 4;
+            dst_ptr[0] = src_ptr[0];
+            dst_ptr[1] = src_ptr[1];
+            dst_ptr[2] = src_ptr[2];
+            dst_ptr[3] = src_ptr[3];
+        }
+    }
+
+    stbi_image_free(data);
+    data = temp_data;
+    picture_width = output_width;
+    picture_height = output_height;
 }

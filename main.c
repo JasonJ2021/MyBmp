@@ -67,8 +67,18 @@ void Main()
 	// right_Rotate_Picture();
 	// right_Rotate_Picture();
 	// displayPicture();
-	save_Picture("./resource/saved.bmp");
+
+	
+//==============================cur part ==========================//
+	cut_Picture(0,0,200,200);
+	displayPicture();
+
+
+//==============================save part =========================//
+	// save_Picture("./resource/saved.bmp");
 	// displayPicture("./resource/2.bmp");
+
+//==============================resize part =======================//
 	// displayPicture("./resource/2.bmp");
 	// clearPicture();
 	// resizePicture(500 ,500);

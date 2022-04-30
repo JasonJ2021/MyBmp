@@ -64,3 +64,15 @@ void left_Rotate_Picture();
 
 void save_Picture(string s);
 
+
+
+/**
+ * @brief 
+ * 坐标原点都取在屏幕左下角!
+ * @param x_downLeft 
+ * @param y_downLeft 
+ * @param x_upRight 
+ * @param y_upRight 
+ */
+void cut_Picture(int x_downLeft , int y_downLeft , int x_upRight , int y_upRight);
+
