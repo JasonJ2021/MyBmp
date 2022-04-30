@@ -40,38 +40,38 @@ void Main()
 {
 	// 设置全屏
 	double w = GetFullScreenWidth();
-	double h = GetFullScreenHeight();
+	double h = GetFullScreenWidth();
 	SetWindowSize(w, h);
 	int x , y , n ;
-	// unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
-	// int size = sizeof(data);
+	unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
+	int size = sizeof(data);
 	InitGraphics();
 	SetWindowTitle("MyBmp");
-	// char *s = (char *)malloc(100);
-	// int width = displayGetWindowPixelWidth();
-	// int height = displayGetWindowPixelHeight();
-	// sprintf(s , "x = %d , y = %d , n = %d size = %d width = %d , height = %d" , x , y, n , size , width , height);
-	// MovePen(1,1);
-	// DrawTextString(s);
+	char *s = (char *)malloc(100);
+	int width = displayGetWindowPixelWidth();
+	int height = displayGetWindowPixelHeight();
+	sprintf(s , "x = %d , y = %d , n = %d size = %d width = %d , height = %d" , x , y, n , size , width , height);
+	MovePen(1,1);
+	DrawTextString(s);
 	// registerTimerEvent(timerCallback);
 	// 15ms为周期，近似于60FPS
 	// // startTimer(0, 15);
-	displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
+	// displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
 
 	// 初始化窗口设置背景颜色为白色
-	displayFillWithColor(255,255,255);
+	// displayFillWithColor(255,255,255);
 	
 	// displayPicture("./resource/2.bmp");
 	// clearPicture();
-	readInPicture("./resource/2.bmp");
+	// readInPicture("./resource/2.bmp");
 	// right_Rotate_Picture();
 	// right_Rotate_Picture();
 	// displayPicture();
 
-	
+
 //==============================cur part ==========================//
-	cut_Picture(0,0,200,200);
-	displayPicture();
+	// cut_Picture(0,0,200,200);
+	// displayPicture();
 
 
 //==============================save part =========================//
