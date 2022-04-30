@@ -3,8 +3,10 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../third_party/stb_image.h"
 #include "../third_party/stb_image_resize.h"
+#include "../third_party/stb_image_write.h"
 
 static HBITMAP oldBitmap = NULL, bitmap = NULL;
 static int picture_width = 0;
@@ -237,4 +239,9 @@ void right_Rotate_Picture(){
     int temp = picture_height;
     picture_height = picture_width;
     picture_width = temp;
+}
+
+
+void save_Picture(string s ){
+    stbi_write_bmp(s, picture_width, picture_height, 4, data, 0);
 }

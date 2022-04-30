@@ -62,3 +62,5 @@ void right_Rotate_Picture();
 
 void left_Rotate_Picture();
 
+void save_Picture(string s);
+

@@ -124,7 +124,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bmp.c" />
     <ClCompile Include="libdisplay\display.c" />
     <ClCompile Include="libgraphics\exceptio.c" />
     <ClCompile Include="libgraphics\genlib.c" />
@@ -135,7 +134,6 @@
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bmp.h" />
     <ClInclude Include="libdisplay\display.h" />
     <ClInclude Include="libgraphics\exception.h" />
     <ClInclude Include="libgraphics\extgraph.h" />

@@ -64,9 +64,10 @@ void Main()
 	// displayPicture("./resource/2.bmp");
 	// clearPicture();
 	readInPicture("./resource/2.bmp");
-	right_Rotate_Picture();
-	right_Rotate_Picture();
-	displayPicture();
+	// right_Rotate_Picture();
+	// right_Rotate_Picture();
+	// displayPicture();
+	save_Picture("./resource/saved.bmp");
 	// displayPicture("./resource/2.bmp");
 	// displayPicture("./resource/2.bmp");
 	// clearPicture();
