@@ -63,12 +63,15 @@ void Main()
 	
 	// displayPicture("./resource/2.bmp");
 	// clearPicture();
-	displayPicture("./resource/2.bmp");
+	readInPicture("./resource/2.bmp");
+	right_Rotate_Picture();
+	right_Rotate_Picture();
+	displayPicture();
 	// displayPicture("./resource/2.bmp");
 	// displayPicture("./resource/2.bmp");
-	clearPicture();
-	resizePicture(500 ,500);
-	displayData();
+	// clearPicture();
+	// resizePicture(500 ,500);
+	// displayPicture();
 	// clearPicture();
 	// resizePicture(100 ,100);
 	// displayData();

@@ -44,7 +44,7 @@ void displayFillWithColor(float r, float g, float b);
  * 
  * @param s 完整的文件名 
  */
-void displayPicture(string s);
+void displayPicture();
 
 
 void resizePicture(int output_width , int output_height);
@@ -54,4 +54,11 @@ void displayData();
 
 
 void clearPicture();
+
+
+void readInPicture(string s);
+
+void right_Rotate_Picture();
+
+void left_Rotate_Picture();
 

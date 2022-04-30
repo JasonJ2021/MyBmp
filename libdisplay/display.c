@@ -7,6 +7,8 @@
 #include "../third_party/stb_image_resize.h"
 
 static HBITMAP oldBitmap = NULL, bitmap = NULL;
+static int picture_width = 0;
+static int picture_height = 0;
 
 struct FrameBuffer
 {
@@ -105,11 +107,13 @@ void displayFillWithColor(float r, float g, float b)
     }
 }
 
+void readInPicture(string s){
+    int  n ;
+	data = stbi_load(s , &picture_width , &picture_height , &n , 4);
+}
 
-void displayPicture(string s){
-    int width , height , n ;
-	data = stbi_load(s , &width , &height , &n , 4);
-    displayViewPort(0,0 , width , height);
+void displayPicture(void){
+    displayViewPort(0,0 , picture_width , picture_height);
     displayData();
 }
 
@@ -119,8 +123,8 @@ void resizePicture(int output_width , int output_height){
     stbir_resize_uint8(data , frameBuffer.portWidth , frameBuffer.portHeight,0,temp_data , output_width,output_height,0,4);
     stbi_image_free(data);
     data = temp_data;
-    frameBuffer.portWidth = output_width;
-    frameBuffer.portHeight = output_height;
+    picture_width = output_width;
+    picture_height = output_height;
 }
 
 void displayData(){
@@ -173,5 +177,64 @@ void displayData(){
 
 
 void clearPicture(){
+    displayViewPort(0 , 0 , picture_width , picture_height);
     displayFillWithColor(255,255,255);
+}
+
+void left_Rotate_Picture(){
+    unsigned char * temp_data = (unsigned char *)malloc(picture_width * picture_height * 4);
+
+    // 步长，每跨一步相当于往上一行
+    int dst_stride = picture_height * 4;
+    int src_stride = picture_width*4;
+    unsigned char * src_ptr;
+    unsigned char * dst_ptr;
+
+    for (int row = 0; row < picture_height; ++row)
+    {
+        for(int col = 0 ; col < picture_width ; ++col){
+            src_ptr = data + row*src_stride + col*4;
+            dst_ptr = temp_data + dst_stride*(picture_width - col - 1) + row*4;
+            dst_ptr[0] = src_ptr[0]; 
+            dst_ptr[1] = src_ptr[1];      
+            dst_ptr[2] = src_ptr[2];
+            dst_ptr[3] = src_ptr[3];
+        }
+    }
+
+    
+    stbi_image_free(data);
+    data = temp_data;
+    int temp = picture_height;
+    picture_height = picture_width;
+    picture_width = temp;
+}
+
+void right_Rotate_Picture(){
+    unsigned char * temp_data = (unsigned char *)malloc(picture_width * picture_height * 4);
+
+    // 步长，每跨一步相当于往上一行
+    int dst_stride = picture_height * 4;
+    int src_stride = picture_width*4;
+    unsigned char * src_ptr;
+    unsigned char * dst_ptr;
+
+    for (int row = 0; row < picture_height; ++row)
+    {
+        for(int col = 0 ; col < picture_width ; ++col){
+            src_ptr = data + row*src_stride + col*4;
+            dst_ptr = temp_data + dst_stride*col + (picture_height - row - 1)*4;
+            dst_ptr[0] = src_ptr[0]; 
+            dst_ptr[1] = src_ptr[1];      
+            dst_ptr[2] = src_ptr[2];
+            dst_ptr[3] = src_ptr[3];
+        }
+    }
+
+    
+    stbi_image_free(data);
+    data = temp_data;
+    int temp = picture_height;
+    picture_height = picture_width;
+    picture_width = temp;
 }
