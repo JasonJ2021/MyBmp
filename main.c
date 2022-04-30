@@ -1,89 +1,173 @@
 #include <string.h>
+#include <math.h>
 
 #include "libgraphics/extgraph.h"
 #include "libdisplay/display.h"
+#include "libgraphics/imgui.h"
 
-#include <math.h>
+static double windows_width;  // ´°¿Ú¿í¶È £¬ ÒÔinch Îªµ¥Î»
+static double windows_height; // ´°¿Ú¸ß¶È £¬ ÒÔinch Îªµ¥Î»
+static int gui_Mode = 0;      // Ñ¡ÔñguiµÄÄ£Ê½
 
-void timerCallback(int timerID)
+void Display();
+void StartGUI();
+
+// ÓÃ»§µÄ×Ö·ûÊÂ¼þÏìÓ¦º¯Êý
+void CharEventProcess(char ch)
 {
-	static unsigned char color = 0;
-	static char increase = 1;
-
-	// åˆ’å‡ºä¸€ä¸ªå°çš„èŒƒå›´ï¼ˆè§†å£ï¼‰ç”¨äºŽæ˜¾ç¤º3Då†…å®¹
-	int windowW = displayGetWindowPixelWidth();
-	int windowH = displayGetWindowPixelHeight();
-	int viewportW = windowW / 4;
-	int viewportH = windowH / 4;
-	// å·¦ä¸‹ å››åˆ†ä¹‹ä¸€ï¼Œæ˜¾ç¤ºçº¢è‰²
-	displayViewPort(windowW / 4, windowH / 4, viewportW, viewportH);
-	displayFillWithColor(color, 0, 0);
-	// å³ä¸‹ å››åˆ†ä¹‹ä¸€ï¼Œæ˜¾ç¤ºç»¿è‰²
-	displayViewPort(windowW / 2, windowH / 4, viewportW, viewportH);
-	displayFillWithColor(0, color, 0);
-	// å·¦ä¸Š å››åˆ†ä¹‹ä¸€ï¼Œæ˜¾ç¤ºè“è‰²
-	displayViewPort(windowW / 4, windowH / 2, viewportW, viewportH);
-	displayFillWithColor(0, 0, color);
-	// å³ä¸Š å››åˆ†ä¹‹ä¸€ï¼Œæ˜¾ç¤ºç™½è‰²ï¼ˆç°è‰²ï¼‰
-	displayViewPort(windowW / 2, windowH / 2, viewportW, viewportH);
-	displayFillWithColor(color, color, color);
-
-	// å‚æ•°æ—¶å˜
-	if (increase == 1) ++color;
-	else color--;
-
-	if (color == 255) increase = 0;
-	else if (color == 0) increase = 1;
+    uiGetChar(ch);
+    Display();
 }
 
+// ÓÃ»§µÄ¼üÅÌÊÂ¼þÏìÓ¦º¯Êý
+void KeyboardEventProcess(int key, int event)
+{
+    uiGetKeyboard(key, event); // GUI»ñÈ¡¼üÅÌ
+    Display();                 // Ë¢ÐÂÏÔÊ¾
+}
+
+// ÓÃ»§µÄÊó±êÊÂ¼þÏìÓ¦º¯Êý
+void MouseEventProcess(int x, int y, int button, int event)
+{
+    uiGetMouse(x, y, button, event); // GUI»ñÈ¡Êó±ê
+    Display();                       // Ë¢ÐÂÏÔÊ¾
+}
+
+// Ö÷º¯Êý
 void Main()
 {
-	// è®¾ç½®å…¨å±
-	double w = GetFullScreenWidth();
-	double h = GetFullScreenWidth();
-	SetWindowSize(w, h);
-	int x , y , n ;
-	unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
-	int size = sizeof(data);
-	InitGraphics();
-	SetWindowTitle("MyBmp");
-	char *s = (char *)malloc(100);
-	int width = displayGetWindowPixelWidth();
-	int height = displayGetWindowPixelHeight();
-	sprintf(s , "x = %d , y = %d , n = %d size = %d width = %d , height = %d" , x , y, n , size , width , height);
-	MovePen(1,1);
-	DrawTextString(s);
-	// registerTimerEvent(timerCallback);
-	// 15msä¸ºå‘¨æœŸï¼Œè¿‘ä¼¼äºŽ60FPS
-	// // startTimer(0, 15);
-	// displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
+    // ÉèÖÃÈ«ÆÁ
+    windows_width = GetFullScreenWidth();
+    windows_height = GetFullScreenWidth();
+    SetWindowSize(windows_width, windows_height);
+    // int x , y , n ;
+    // unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
+    // int size = sizeof(data);
+    InitGraphics();
+    SetWindowTitle("MyBmp");
+    // ========================GUI PART==================================
+    //×Ô¶¨ÒåÑÕÉ«
+    DefineColor("GrayBlue", 0.57, 0.71, 0.83);
 
-	// åˆå§‹åŒ–çª—å£è®¾ç½®èƒŒæ™¯é¢œè‰²ä¸ºç™½è‰²
-	// displayFillWithColor(255,255,255);
-	
-	// displayPicture("./resource/2.bmp");
-	// clearPicture();
-	// readInPicture("./resource/2.bmp");
-	// right_Rotate_Picture();
-	// right_Rotate_Picture();
-	// displayPicture();
+    // ×¢²áÊ±¼äÏìÓ¦º¯Êý
+    registerCharEvent(CharEventProcess);         // ×Ö·û
+    registerKeyboardEvent(KeyboardEventProcess); // ¼üÅÌ
+    registerMouseEvent(MouseEventProcess);       // Êó±ê
 
+    setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1);
+    setButtonColors("GrayBlue", "Black", "Dark Gray", "White", 1);
+    setTextBoxColors("GrayBlue", "Black", "Dark Gray", "White", 1);
 
-//==============================cur part ==========================//
-	// cut_Picture(0,0,200,200);
-	// displayPicture();
+    // =================================================================================
+    // char *s = (char *)malloc(100);
+    // int width = displayGetWindowPixelWidth();
+    // int height = displayGetWindowPixelHeight();
+    // sprintf(s , "x = %d , y = %d , n = %d size = %d width = %d , height = %d" , x , y, n , size , width , height);
+    // MovePen(1,1);
+    // DrawTextString(s);
+    // registerTimerEvent(timerCallback);
+    // 15msÎªÖÜÆÚ£¬½üËÆÓÚ60FPS
+    // // startTimer(0, 15);
+    // displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
 
+    // ³õÊ¼»¯´°¿ÚÉèÖÃ±³¾°ÑÕÉ«Îª°×É«
+    // displayFillWithColor(255,255,255);
 
-//==============================save part =========================//
-	// save_Picture("./resource/saved.bmp");
-	// displayPicture("./resource/2.bmp");
+    // displayPicture("./resource/2.bmp");
+    // clearPicture();
+    // readInPicture("./resource/2.bmp");
+    // right_Rotate_Picture();
+    // right_Rotate_Picture();
+    // displayPicture();
 
-//==============================resize part =======================//
-	// displayPicture("./resource/2.bmp");
-	// clearPicture();
-	// resizePicture(500 ,500);
-	// displayPicture();
-	// clearPicture();
-	// resizePicture(100 ,100);
-	// displayData();
+    //==============================cur part ==========================//
+    // cut_Picture(0,0,200,200);
+    // displayPicture();
+
+    //==============================save part =========================//
+    // save_Picture("./resource/saved.bmp");
+    // displayPicture("./resource/2.bmp");
+
+    //==============================resize part =======================//
+    // displayPicture("./resource/2.bmp");
+    // clearPicture();
+    // resizePicture(500 ,500);
+    // displayPicture();
+    // clearPicture();
+    // resizePicture(100 ,100);
+    // displayData();
+}
+
+// ÏÔÊ¾º¯Êý
+void Display()
+{
+
+    switch (gui_Mode)
+    {
+    case 0:
+        StartGUI();
+        break; //¿ªÊ¼½çÃæ
+    default:
+        break;
+    }
+}
+
+// ¿ªÊ¼½çÃæ
+void StartGUI()
+{
+    double fH = GetFontHeight();  //×Ö¸ß
+    double w = windows_width / 4; //°´Å¥¿í¶È
+    double h = fH * 2.5;          //°´Å¥¸ß¶È
+    int selection;                //²Ëµ¥Ñ¡Ïî
+    double x;
+    double y;
+    static char *menuListHelp[] = {"help" , "about" ,"methods"};
+    static char *selectedLabel1 = NULL;
+    static char *selectedLabel2 = NULL;
+
+    drawMenuBar(0, windows_height - fH * 1.5, windows_width, fH * 1.5); //²Ëµ¥À¸
+
+    selection = menuList(GenUIID(0), 0, windows_height - fH * 1.5, w / 3, TextStringWidth(menuListHelp[1]) * 1.2, fH * 1.5, menuListHelp, sizeof(menuListHelp) / sizeof(menuListHelp[0]));
+    if (selection > 0)
+    {
+        selectedLabel1 = menuListHelp[0];
+        selectedLabel2 = menuListHelp[selection];
+    }
+    if (selection == 1)
+    {
+        gui_Mode = 0;
+    }
+    if (selection == 2)
+    {
+        gui_Mode = 0;
+    }
+
+    drawMenuBar(0, 0, windows_width, fH * 3); //ÉÏÒ»²½²Ù×÷ÏÔÊ¾À¸
+
+    if (button(GenUIID(0), windows_width / 2 - w / 2, windows_height / 2 + 7 * fH, w, h, "µÇÂ¼"))
+    {
+        selectedLabel1 = NULL;
+        selectedLabel2 = NULL;
+        gui_Mode = 0;
+    }
+    // if (button(GenUIID(0), windows_width / 2 - w / 2, windows_height / 2 + 3.5 * fH, w, h, "ÓÃ»§µÇÂ¼"))
+    // {
+    //     selectedLabel1 = NULL;
+    //     selectedLabel2 = NULL;
+    //     gui_Mode = 2;
+    // }
+    // if (button(GenUIID(0), windows_width / 2 - w / 2, windows_height / 2, w, h, "¹ÜÀíÔ±µÇÂ¼"))
+    // {
+    //     selectedLabel1 = NULL;
+    //     selectedLabel2 = NULL;
+    //     gui_Mode = 3;
+    // }
+    // if (button(GenUIID(0), windows_width / 2 - w / 2, windows_height / 2 - 3.5 * fH, w, h, "ÍË³ö"))
+    //     exit(-1);
+
+    // SetPenColor("Red");
+    // drawLabel(0, fH * 2, "ÉÏÒ»²½²Ëµ¥²Ù×÷Îª£º");
+    // SetPenColor("Black");
+    // drawLabel(0, fH * 0.5, selectedLabel1);
+    // drawLabel(w / 3, fH * 0.5, selectedLabel2);
 }

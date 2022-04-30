@@ -4,32 +4,32 @@
 
 unsigned char *data;
 /**
- * @brief ä»¥åƒç´ ä¸ºå•ä½è·å–çª—å£å®½åº¦
+ * @brief ÒÔÏñËØÎªµ¥Î»»ñÈ¡´°¿Ú¿í¶È
  *
- * @return int çª—å£å®½åº¦
+ * @return int ´°¿Ú¿í¶È
  */
 int displayGetWindowPixelWidth();
 
 
 /**
- * @brief ä»¥åƒç´ ä¸ºå•ä½è·å–çª—å£é«˜åº¦
+ * @brief ÒÔÏñËØÎªµ¥Î»»ñÈ¡´°¿Ú¸ß¶È
  *
- * @return int çª—å£é«˜åº¦
+ * @return int ´°¿Ú¸ß¶È
  */
 int displayGetWindowPixelHeight();
 
 /**
- * @brief è®¾ç½®å½“å‰portçš„å°ºå¯¸
- * å‡ä»¥åƒç´ ä¸ºå•ä½
- * @param x è·ç¦»å·¦ä¸‹è§’çš„æ¨ªåæ ‡
- * @param y è·ç¦»å·¦ä¸‹è§’çš„çºµåæ ‡
- * @param width çª—å£å®½åº¦
- * @param height çª—å£é«˜åº¦
+ * @brief ÉèÖÃµ±Ç°portµÄ³ß´ç
+ * ¾ùÒÔÏñËØÎªµ¥Î»
+ * @param x ¾àÀë×óÏÂ½ÇµÄºá×ø±ê
+ * @param y ¾àÀë×óÏÂ½ÇµÄ×İ×ø±ê
+ * @param width ´°¿Ú¿í¶È
+ * @param height ´°¿Ú¸ß¶È
  */
 void displayViewPort(int x, int y, int width, int height);
 
 /**
- * @brief ä»¥æŸç§é¢œè‰²å¡«å……æŸä¸ªport
+ * @brief ÒÔÄ³ÖÖÑÕÉ«Ìî³äÄ³¸öport
  *
  * @param r
  * @param g
@@ -40,9 +40,9 @@ void displayFillWithColor(float r, float g, float b);
 
 
 /**
- * @brief æ˜¾ç¤ºä¸€å¼ å›¾ç‰‡
+ * @brief ÏÔÊ¾Ò»ÕÅÍ¼Æ¬
  * 
- * @param s å®Œæ•´çš„æ–‡ä»¶å 
+ * @param s ÍêÕûµÄÎÄ¼şÃû 
  */
 void displayPicture();
 
@@ -68,7 +68,7 @@ void save_Picture(string s);
 
 /**
  * @brief 
- * åæ ‡åŸç‚¹éƒ½å–åœ¨å±å¹•å·¦ä¸‹è§’!
+ * ×ø±êÔ­µã¶¼È¡ÔÚÆÁÄ»×óÏÂ½Ç!
  * @param x_downLeft 
  * @param y_downLeft 
  * @param x_upRight 

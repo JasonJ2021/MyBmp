@@ -14,9 +14,9 @@ static int picture_height = 0;
 
 struct FrameBuffer
 {
-    int windowsWidth, windowsHeight; // çª—å£å¤§å°
-    int portX, portY;                // è§†å›¾ä½ç½®ï¼Œè·ç¦»å·¦ä¸‹è§’
-    int portWidth, portHeight;       // è§†å›¾å¤§å°
+    int windowsWidth, windowsHeight; // ´°¿Ú´óĞ¡
+    int portX, portY;                // ÊÓÍ¼Î»ÖÃ£¬¾àÀë×óÏÂ½Ç
+    int portWidth, portHeight;       // ÊÓÍ¼´óĞ¡
     unsigned char *data;
 };
 
@@ -41,7 +41,7 @@ void displayViewPort(int x, int y, int width, int height)
         BITMAPINFO bitmapInfo = {{sizeof(BITMAPINFOHEADER),
                                   frameBuffer.windowsWidth, frameBuffer.windowsHeight,
                                   1,
-                                  32, // ä¸€ä¸ªåƒç´ å 4ä¸ªbyteï¼Œ32ä¸ªbit
+                                  32, // Ò»¸öÏñËØÕ¼4¸öbyte£¬32¸öbit
                                   BI_RGB,
                                   frameBuffer.windowsWidth * frameBuffer.windowsHeight * 4,
                                   0, 0, 0, 0}};
@@ -52,7 +52,7 @@ void displayViewPort(int x, int y, int width, int height)
         frameBuffer.portWidth = frameBuffer.windowsWidth;
         frameBuffer.portHeight = frameBuffer.windowsHeight;
     }
-    // æ£€æŸ¥å›¾ç‰‡æ˜¯å¦è¶…å‡ºçª—å£
+    // ¼ì²éÍ¼Æ¬ÊÇ·ñ³¬³ö´°¿Ú
     frameBuffer.portX = x < 0 ? 0 : x;
     frameBuffer.portX = frameBuffer.portX >= frameBuffer.windowsWidth - 1
                             ? frameBuffer.windowsWidth - 1
@@ -70,40 +70,40 @@ void displayViewPort(int x, int y, int width, int height)
 
 void displayFillWithColor(float r, float g, float b)
 {
-    // æ­¥é•¿ï¼Œæ¯è·¨ä¸€æ­¥ç›¸å½“äºå¾€ä¸Šä¸€è¡Œ
+    // ²½³¤£¬Ã¿¿çÒ»²½Ïàµ±ÓÚÍùÉÏÒ»ĞĞ
     int stride = frameBuffer.windowsWidth * 4;
-    // è¡Œèµ·å§‹æŒ‡é’ˆï¼ŒæŒ‡å‘å½“å‰viewport ç¬¬Nè¡Œ çš„ ç¬¬ä¸€ä¸ªåƒç´ 
+    // ĞĞÆğÊ¼Ö¸Õë£¬Ö¸Ïòµ±Ç°viewport µÚNĞĞ µÄ µÚÒ»¸öÏñËØ
     unsigned char *rowPtr = frameBuffer.data + frameBuffer.portY * stride + frameBuffer.portX * 4;
     for (int row = 0; row < frameBuffer.portHeight; ++row)
     {
-        // åƒç´ èµ·å§‹æŒ‡é’ˆï¼ŒæŒ‡å‘ rowPtræ‰€åœ¨è¡Œ çš„ ç¬¬Nä¸ª åƒç´ 
+        // ÏñËØÆğÊ¼Ö¸Õë£¬Ö¸Ïò rowPtrËùÔÚĞĞ µÄ µÚN¸ö ÏñËØ
         unsigned char *pixPtr = rowPtr;
         for (int col = 0; col < frameBuffer.portWidth; ++col)
         {
-            // é€åƒç´ èµ‹é¢œè‰²å€¼
-            // æ³¨æ„ï¼šWIN32çš„BITMAPé‡‡ç”¨BGRAå¸ƒå±€ï¼Œè€Œä¸æ˜¯RGBA
-            //   ä¸€ä¸ªåƒç´ å 4ä¸ªbyteï¼Œ32ä¸ªbit
+            // ÖğÏñËØ¸³ÑÕÉ«Öµ
+            // ×¢Òâ£ºWIN32µÄBITMAP²ÉÓÃBGRA²¼¾Ö£¬¶ø²»ÊÇRGBA
+            //   Ò»¸öÏñËØÕ¼4¸öbyte£¬32¸öbit
             pixPtr[0] = b;
             pixPtr[1] = g;
             pixPtr[2] = r;
-            pixPtr[3] = 255; // é€æ˜åº¦æ»¡æ ¼
+            pixPtr[3] = 255; // Í¸Ã÷¶ÈÂú¸ñ
 
-            pixPtr += 4; // å¾€å³ä¸€åˆ—
+            pixPtr += 4; // ÍùÓÒÒ»ÁĞ
         }
-        rowPtr += stride; // å¾€ä¸Šä¸€è¡Œ
+        rowPtr += stride; // ÍùÉÏÒ»ĞĞ
     }
 
-    // å°†æ•´ä¸ªviewportæ ‡è®°ä¸ºéœ€è¦æ›´æ–°ï¼ˆä¸æ˜¯éœ€è¦æ“¦é™¤ï¼‰
+    // ½«Õû¸öviewport±ê¼ÇÎªĞèÒª¸üĞÂ£¨²»ÊÇĞèÒª²Á³ı£©
     {
-        // æ³¨æ„ï¼šviewportRECTä½¿ç”¨Win32åæ ‡ç³»ï¼Œ
-        //   yè½´åå‘ï¼ŒåŒæ—¶åŸç‚¹åœ¨çª—å£å·¦ä¸Šè§’
+        // ×¢Òâ£ºviewportRECTÊ¹ÓÃWin32×ø±êÏµ£¬
+        //   yÖá·´Ïò£¬Í¬Ê±Ô­µãÔÚ´°¿Ú×óÉÏ½Ç
         RECT viewportRECT = {
-            frameBuffer.portX,                                                      // å·¦
-            frameBuffer.windowsHeight - frameBuffer.portY - frameBuffer.portHeight, // ä¸Š
-            frameBuffer.portX + frameBuffer.portWidth,                              // å³
-            frameBuffer.windowsHeight - frameBuffer.portY                           // ä¸‹
+            frameBuffer.portX,                                                      // ×ó
+            frameBuffer.windowsHeight - frameBuffer.portY - frameBuffer.portHeight, // ÉÏ
+            frameBuffer.portX + frameBuffer.portWidth,                              // ÓÒ
+            frameBuffer.windowsHeight - frameBuffer.portY                           // ÏÂ
         };
-        InvalidateRect(GetDisPlayWindows(), &viewportRECT, FALSE); // FALSEæ³¨æ„ï¼
+        InvalidateRect(GetDisPlayWindows(), &viewportRECT, FALSE); // FALSE×¢Òâ£¡
     }
 }
 
@@ -131,50 +131,50 @@ void resizePicture(int output_width, int output_height)
 
 void displayData()
 {
-    // æ­¥é•¿ï¼Œæ¯è·¨ä¸€æ­¥ç›¸å½“äºå¾€ä¸Šä¸€è¡Œ
+    // ²½³¤£¬Ã¿¿çÒ»²½Ïàµ±ÓÚÍùÉÏÒ»ĞĞ
     int stride = frameBuffer.windowsWidth * 4;
     int src_stride = frameBuffer.portWidth * 4;
-    // è¡Œèµ·å§‹æŒ‡é’ˆï¼ŒæŒ‡å‘å½“å‰viewport ç¬¬Nè¡Œ çš„ ç¬¬ä¸€ä¸ªåƒç´ 
+    // ĞĞÆğÊ¼Ö¸Õë£¬Ö¸Ïòµ±Ç°viewport µÚNĞĞ µÄ µÚÒ»¸öÏñËØ
     unsigned char *rowPtr = frameBuffer.data + frameBuffer.portY * stride + frameBuffer.portX * 4;
-    // æºæ–‡ä»¶bmpçš„åƒç´ æ•°æ®èµ·å§‹æŒ‡é’ˆ
+    // Ô´ÎÄ¼şbmpµÄÏñËØÊı¾İÆğÊ¼Ö¸Õë
     unsigned char *src_Row_Ptr = data;
 
     for (int row = 0; row < frameBuffer.portHeight; ++row)
     {
-        // åƒç´ èµ·å§‹æŒ‡é’ˆï¼ŒæŒ‡å‘ rowPtræ‰€åœ¨è¡Œ çš„ ç¬¬Nä¸ª åƒç´ 
+        // ÏñËØÆğÊ¼Ö¸Õë£¬Ö¸Ïò rowPtrËùÔÚĞĞ µÄ µÚN¸ö ÏñËØ
         unsigned char *pixPtr = rowPtr;
         unsigned char *srcPtr = src_Row_Ptr + src_stride * (frameBuffer.portHeight - 1);
         for (int col = 0; col < frameBuffer.portWidth; ++col)
         {
-            // é€åƒç´ èµ‹é¢œè‰²å€¼
-            // æ³¨æ„ï¼šWIN32çš„BITMAPé‡‡ç”¨BGRAå¸ƒå±€ï¼Œè€Œä¸æ˜¯RGBA
-            //   ä¸€ä¸ªåƒç´ å 4ä¸ªbyteï¼Œ32ä¸ªbit
+            // ÖğÏñËØ¸³ÑÕÉ«Öµ
+            // ×¢Òâ£ºWIN32µÄBITMAP²ÉÓÃBGRA²¼¾Ö£¬¶ø²»ÊÇRGBA
+            //   Ò»¸öÏñËØÕ¼4¸öbyte£¬32¸öbit
             // pixPtr[0] = b;
             // pixPtr[1] = g;
             // pixPtr[2] = r;
-            // pixPtr[3] = 255; // é€æ˜åº¦æ»¡æ ¼
+            // pixPtr[3] = 255; // Í¸Ã÷¶ÈÂú¸ñ
             pixPtr[0] = srcPtr[2];
             pixPtr[1] = srcPtr[1];
             pixPtr[2] = srcPtr[0];
             pixPtr[3] = 255;
             srcPtr += 4;
-            pixPtr += 4; // å¾€å³ä¸€åˆ—
+            pixPtr += 4; // ÍùÓÒÒ»ÁĞ
         }
-        rowPtr += stride; // å¾€ä¸Šä¸€è¡Œ
+        rowPtr += stride; // ÍùÉÏÒ»ĞĞ
         src_Row_Ptr -= src_stride;
     }
 
-    // å°†æ•´ä¸ªviewportæ ‡è®°ä¸ºéœ€è¦æ›´æ–°ï¼ˆä¸æ˜¯éœ€è¦æ“¦é™¤ï¼‰
+    // ½«Õû¸öviewport±ê¼ÇÎªĞèÒª¸üĞÂ£¨²»ÊÇĞèÒª²Á³ı£©
     {
-        // æ³¨æ„ï¼šviewportRECTä½¿ç”¨Win32åæ ‡ç³»ï¼Œ
-        //   yè½´åå‘ï¼ŒåŒæ—¶åŸç‚¹åœ¨çª—å£å·¦ä¸Šè§’
+        // ×¢Òâ£ºviewportRECTÊ¹ÓÃWin32×ø±êÏµ£¬
+        //   yÖá·´Ïò£¬Í¬Ê±Ô­µãÔÚ´°¿Ú×óÉÏ½Ç
         RECT viewportRECT = {
-            frameBuffer.portX,                                                      // å·¦
-            frameBuffer.windowsHeight - frameBuffer.portY - frameBuffer.portHeight, // ä¸Š
-            frameBuffer.portX + frameBuffer.portWidth,                              // å³
-            frameBuffer.windowsHeight - frameBuffer.portY                           // ä¸‹
+            frameBuffer.portX,                                                      // ×ó
+            frameBuffer.windowsHeight - frameBuffer.portY - frameBuffer.portHeight, // ÉÏ
+            frameBuffer.portX + frameBuffer.portWidth,                              // ÓÒ
+            frameBuffer.windowsHeight - frameBuffer.portY                           // ÏÂ
         };
-        InvalidateRect(GetDisPlayWindows(), &viewportRECT, FALSE); // FALSEæ³¨æ„ï¼
+        InvalidateRect(GetDisPlayWindows(), &viewportRECT, FALSE); // FALSE×¢Òâ£¡
     }
 }
 
@@ -188,7 +188,7 @@ void left_Rotate_Picture()
 {
     unsigned char *temp_data = (unsigned char *)malloc(picture_width * picture_height * 4);
 
-    // æ­¥é•¿ï¼Œæ¯è·¨ä¸€æ­¥ç›¸å½“äºå¾€ä¸Šä¸€è¡Œ
+    // ²½³¤£¬Ã¿¿çÒ»²½Ïàµ±ÓÚÍùÉÏÒ»ĞĞ
     int dst_stride = picture_height * 4;
     int src_stride = picture_width * 4;
     unsigned char *src_ptr;
@@ -218,7 +218,7 @@ void right_Rotate_Picture()
 {
     unsigned char *temp_data = (unsigned char *)malloc(picture_width * picture_height * 4);
 
-    // æ­¥é•¿ï¼Œæ¯è·¨ä¸€æ­¥ç›¸å½“äºå¾€ä¸Šä¸€è¡Œ
+    // ²½³¤£¬Ã¿¿çÒ»²½Ïàµ±ÓÚÍùÉÏÒ»ĞĞ
     int dst_stride = picture_height * 4;
     int src_stride = picture_width * 4;
     unsigned char *src_ptr;
@@ -267,12 +267,12 @@ void cut_Picture(int x_downLeft , int y_downLeft , int x_upRight , int y_upRight
     int output_height = y_upRight - y_downLeft;
     unsigned char *temp_data = (unsigned char *)malloc(output_width * output_height * 4);
 
-    // æ­¥é•¿ï¼Œæ¯è·¨ä¸€æ­¥ç›¸å½“äºå¾€ä¸Šä¸€è¡Œ
+    // ²½³¤£¬Ã¿¿çÒ»²½Ïàµ±ÓÚÍùÉÏÒ»ĞĞ
     int dst_stride = output_width * 4;
     int src_stride = picture_width * 4;
     unsigned char *src_ptr;
     unsigned char *dst_ptr;
-    // éœ€è¦åˆ›å»ºä¸€ä¸ªbase_dataæŒ‡é’ˆ , æŒ‡å‘src_dataä¸­å‰ªåˆ‡çš„å¼€å§‹ä½ç½®
+    // ĞèÒª´´½¨Ò»¸öbase_dataÖ¸Õë , Ö¸Ïòsrc_dataÖĞ¼ôÇĞµÄ¿ªÊ¼Î»ÖÃ
     unsigned char *base_data = data + src_stride * (picture_height - y_downLeft - output_width - 1 ) + 4 * x_downLeft;
     for (int row = 0; row < output_width; ++row)
     {

@@ -128,6 +128,7 @@
     <ClCompile Include="libgraphics\exceptio.c" />
     <ClCompile Include="libgraphics\genlib.c" />
     <ClCompile Include="libgraphics\graphics.c" />
+    <ClCompile Include="libgraphics\imgui.c" />
     <ClCompile Include="libgraphics\random.c" />
     <ClCompile Include="libgraphics\simpio.c" />
     <ClCompile Include="libgraphics\strlib.c" />
@@ -140,6 +141,7 @@
     <ClInclude Include="libgraphics\gcalloc.h" />
     <ClInclude Include="libgraphics\genlib.h" />
     <ClInclude Include="libgraphics\graphics.h" />
+    <ClInclude Include="libgraphics\imgui.h" />
     <ClInclude Include="libgraphics\random.h" />
     <ClInclude Include="libgraphics\simpio.h" />
     <ClInclude Include="libgraphics\strlib.h" />
