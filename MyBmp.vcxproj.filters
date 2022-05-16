@@ -89,5 +89,8 @@
     <ClInclude Include="libgraphics\imgui.h">
       <Filter>源文件\libgraphics</Filter>
     </ClInclude>
+    <ClInclude Include="third_party\dirent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

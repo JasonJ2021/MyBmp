@@ -145,6 +145,7 @@
     <ClInclude Include="libgraphics\random.h" />
     <ClInclude Include="libgraphics\simpio.h" />
     <ClInclude Include="libgraphics\strlib.h" />
+    <ClInclude Include="third_party\dirent.h" />
     <ClInclude Include="third_party\stb_image.h" />
     <ClInclude Include="win32Export.h" />
   </ItemGroup>
