@@ -19,6 +19,11 @@ static char FileName[100][200] = { "" };
 
 static double mouse_x = 0;
 static double mouse_y = 0;
+static int cur_index = 0 ; // 当前显示图片的Index
+static int should_display = 0; // 当前是否应该显示图片
+
+
+
 // 清屏函数，provided in libgraphics
 void DisplayClear(void);
 
@@ -73,37 +78,38 @@ void MouseEventProcess(int x, int y, int button, int event)
 // 主函数
 void Main()
 {
-    // // 打开控制台，方便用printf/scanf输出/入变量信息，方便调试
+    // 打开控制台，方便用printf/scanf输出/入变量信息，方便调试
 	InitConsole();
-	// //关闭控制台，仅在VS Code环境下使用，若为VS2019或VS2017环境，请注释掉下面这行代码
-	// //FreeConsole();
-	// // 初始化窗口
-	// SetWindowTitle("BMP图片显示器");
-	// //SetWindowSize(13.39, 7.48);  // 如果屏幕尺寸不够，则按比例缩小
-	// // 获取全屏窗口尺寸
+	//关闭控制台，仅在VS Code环境下使用，若为VS2019或VS2017环境，请注释掉下面这行代码
+	//FreeConsole();
+	// 初始化窗口
+	SetWindowTitle("BMP图片显示器");
+	//SetWindowSize(13.39, 7.48);  // 如果屏幕尺寸不够，则按比例缩小
+	// 获取全屏窗口尺寸
 	double fullwidth = GetFullScreenWidth();
 	double fullheight = GetFullScreenHeight();
 	// 设置窗口尺寸
 	SetWindowSize(fullwidth, fullheight);
-	//printf("尺寸大小：%.2f %.2f\n", fullwidth, fullheight);
+	printf("尺寸大小：%.2f %.2f\n", fullwidth, fullheight);
 	// 初始化图形系统
 	InitGraphics();
 
-	// // 获得窗口尺寸
+	// 获得窗口尺寸
 	winwidth = GetWindowWidth();
 	winheight = GetWindowHeight();
-	// printf("窗口尺寸：%.2f %.2f\n", winwidth, winheight);
+	printf("窗口尺寸：%.2f %.2f\n", winwidth, winheight);
+	displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
+	displayFillWithColor(255,255,255);
+	// 自定义颜色
+	DefineColor("GrayBlue", 0.57, 0.71, 0.83);
 
-	// // 自定义颜色
-	// DefineColor("GrayBlue", 0.57, 0.71, 0.83);
+	// 注册时间响应函数
+	registerCharEvent(CharEventProcess);        // 字符
+	registerKeyboardEvent(KeyboardEventProcess);// 键盘
+	registerMouseEvent(MouseEventProcess);      // 鼠标
 
-	// // 注册时间响应函数
-	// registerCharEvent(CharEventProcess);        // 字符
-	// registerKeyboardEvent(KeyboardEventProcess);// 键盘
-	// registerMouseEvent(MouseEventProcess);      // 鼠标
-
-	// //获取文件信息
-	// SearchFiles(BasePatch);
+	//获取文件信息
+	SearchFiles(BasePatch);
 
 	//============================================== DEBUG DISPLAY
     // 设置全屏
@@ -268,6 +274,28 @@ void ShowBMP()
 		selectedLabel1 = menuListTool[0];
 		selectedLabel2 = menuListTool[selection];
 	}
+
+	// 旋转
+	if(selection == 3){
+		if(should_display){
+			right_Rotate_Picture(cur_index);
+		}
+	}
+
+	// 放大
+	if(selection == 1){
+		if(should_display){
+			expandPicture(cur_index);
+		}
+	}
+
+	// 缩小
+	if(selection == 2){
+		if(should_display){
+			shrinkPicture(cur_index);
+		}
+	}
+
 
 	// 帮助菜单
 	selection = menuList(GenUIID(0), x + 2 * w, y - h, w, wlist, h, menuListHelp, sizeof(menuListHelp) / sizeof(menuListHelp[0]));
@@ -628,6 +656,8 @@ void ShowHelp()
 	SetPenColor("Red");
 	drawLabel(0, fontHeight*0.4, selectedLabel1);
 	drawLabel(TextStringWidth(menuListHelp[0]) * 2, fontHeight*0.4, selectedLabel2);
+
+
 }
 
 void DrawShowPictureRegion()
@@ -644,14 +674,20 @@ void DrawShowPictureRegion()
 	SetPenSize(2);
 	drawBox(bmpx, bmpy, bmpw, bmph, 1, "bmp图片显示区域", 'C', "Red");
 	printf("%d\n", GetPenSize());
-
+	// 设置图片显示的中心位置
+	set_picture_middle_x(inchXToPixelX(bmpx + bmpw/2));
+	set_picture_middle_y(inchYToPixelY(bmpy + bmph/2));
+	// 如果需要显示图片，在这里显示图片！
+	if(should_display){
+		displayPicture(cur_index);
+	}
 	// 快捷键小图标
 	// 上一张
 	SetPenSize(1);
 	if (button(GenUIID(0), bmpx, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 切换显示上一张图片
-
+		cur_index = getPrevIndex(cur_index);
 	}
 	SetPenColor("Black");
 	MovePen(bmpx + buttonw * 0.2, fontHeight * 3 + buttonh / 2);
@@ -663,7 +699,7 @@ void DrawShowPictureRegion()
 	if (button(GenUIID(0), winwidth - buttonw, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 切换显示下一张图片
-
+		cur_index = getNextIndex(cur_index);
 	}
 	MovePen(winwidth - buttonw * 0.2, fontHeight * 3 + buttonh / 2);
 	DrawLine(-buttonw * 0.5, -buttonh * 0.2);
@@ -674,7 +710,7 @@ void DrawShowPictureRegion()
 	if (button(GenUIID(0), winwidth - buttonw * 4, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 缩小图片
-
+		shrinkPicture(cur_index);
 	}
 	MovePen(winwidth - buttonw * 4 + buttonw * 0.4, fontHeight * 3.1 + buttonh / 2);
 	SetPenSize(2);
@@ -685,7 +721,7 @@ void DrawShowPictureRegion()
 	if (button(GenUIID(0), bmpx + buttonw * 4, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 放大图片
-
+		expandPicture(cur_index);
 	}
 	MovePen(bmpx + buttonw * 4 + buttonw * 0.35, fontHeight * 3.1 + buttonh / 2);
 	SetPenSize(2);
@@ -710,7 +746,13 @@ void DrawShowFilesList()
 	{
 		char name[128];
 		strcpy(name, FileName[k]);
-		button(GenUIID(k), x, y - fontHeight * 2- k * h * 1.2, w, h, name);
+		if(button(GenUIID(k), x, y - fontHeight * 2- k * h * 1.2, w, h, name)){
+			// ./resource/2.bmp
+			char name_full[156] = "./resource/";
+			strcat(name_full , name);
+			readInPicture(name_full);
+			should_display = 1;
+		}
 		printf("button %s %s\n", name, FileName[k]);
 	}
 }

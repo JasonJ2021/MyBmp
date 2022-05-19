@@ -11,7 +11,7 @@
 static HBITMAP oldBitmap = NULL, bitmap = NULL;
 static int picture_middle_x = 0;
 static int picture_middle_y = 0;
-
+int picture_index = 0;
 
 
 struct FrameBuffer
@@ -111,8 +111,15 @@ void displayFillWithColor(float r, float g, float b)
 
 void readInPicture(string s)
 {
+    for(int i = 0 ; i < picture_index;i++){
+        if(strcmp(s,pictures[i].name) == 0){
+            return;
+        }
+    }
+    printf("read in a picture !\n");
     int n;
     pictures[picture_index].data = stbi_load(s, &pictures[picture_index].picture_width, &pictures[picture_index].picture_height, &n, 4);
+    strcpy(pictures[picture_index].name , s);
     picture_index++;
 }
 
@@ -129,7 +136,7 @@ void resizePicture(int i ,int output_width, int output_height)
     unsigned char *temp_data = (unsigned char *)malloc(output_width * output_height * 4);
     stbir_resize_uint8(pictures[i].data, frameBuffer.portWidth, frameBuffer.portHeight, 0, temp_data, output_width, output_height, 0, 4);
     stbi_image_free(pictures[i].data);
-    data = temp_data;
+    pictures[i].data = temp_data;
     pictures[i].picture_width = output_width;
     pictures[i].picture_height = output_height;
 }
@@ -188,7 +195,7 @@ void clearPicture(int i )
     int x = picture_middle_x - pictures[i].picture_width/2;
     int y = picture_middle_y - pictures[i].picture_height/2;
     displayViewPort(x, y, pictures[i].picture_width, pictures[i].picture_height);
-    displayFillWithColor(255, 255, 255);
+    displayFillWithColor(154, 154, 154);
 }
 
 void left_Rotate_Picture(int i )
@@ -318,4 +325,28 @@ void set_picture_middle_x(int x){
 void set_picture_middle_y(int y){
     picture_middle_y = y;
     printf("%d\n" , picture_middle_x);
+}
+
+
+int getNextIndex(int index){
+    if(index + 1 >= picture_index){
+        return 0;
+    }
+    return index + 1;
+}
+
+int getPrevIndex(int index){
+    if(index - 1 < 0){
+        return picture_index - 1;
+    }
+    return index - 1;
+}
+
+
+void expandPicture(int i ){
+    resizePicture(i,pictures[i].picture_width*1.1 , pictures[i].picture_height*1.1);
+}
+
+void shrinkPicture(int i ){
+    resizePicture(i,pictures[i].picture_width*0.9 , pictures[i].picture_height*0.9);
 }

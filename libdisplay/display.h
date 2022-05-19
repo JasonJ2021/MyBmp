@@ -7,9 +7,10 @@ typedef struct {
     int picture_width;
     int picture_height;
     unsigned char *data;
+    char name[128];
 }picture;
 picture pictures[12]; // 最多读入12张照片
-static int picture_index = 0;
+extern int picture_index;
 
 /**
  * @brief 以像素为单位获取窗口宽度
@@ -100,3 +101,12 @@ void set_picture_middle_x(int x);
  * @param y 
  */
 void set_picture_middle_y(int y);
+
+int getNextIndex(int index);
+
+int getPrevIndex(int index);
+
+
+void expandPicture(int i );
+
+void shrinkPicture(int i );
