@@ -18,3 +18,6 @@ HDC GetDisplayOSDC();
 
 int GetWindowPixelWidth();
 int GetWindowPixelHeight();
+
+int inchXToPixelX(double x);
+int inchYToPixelY(double y);

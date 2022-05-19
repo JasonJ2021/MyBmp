@@ -3,6 +3,14 @@
 #include "../libgraphics/strlib.h"
 
 unsigned char *data;
+typedef struct {
+    int picture_width;
+    int picture_height;
+    unsigned char *data;
+}picture;
+picture pictures[12]; // 最多读入12张照片
+static int picture_index = 0;
+
 /**
  * @brief 以像素为单位获取窗口宽度
  *
@@ -40,27 +48,29 @@ void displayFillWithColor(float r, float g, float b);
 
 
 /**
- * @brief 显示一张图片
+ * @brief 
  * 
- * @param s 完整的文件名 
+ * @param i 图片的索引值
+ * @param x 图片左下角的横坐标值
+ * @param y 图片左下角的纵坐标值，都以像素为单位
  */
-void displayPicture();
+void displayPicture(int i);
 
 
 void resizePicture(int output_width , int output_height);
 
 
-void displayData();
+void displayData(int i );
 
 
-void clearPicture();
+void clearPicture(int i );
 
 
 void readInPicture(string s);
 
-void right_Rotate_Picture();
+void right_Rotate_Picture(int i );
 
-void left_Rotate_Picture();
+void left_Rotate_Picture(int i );
 
 void save_Picture(string s);
 
@@ -69,10 +79,24 @@ void save_Picture(string s);
 /**
  * @brief 
  * 坐标原点都取在屏幕左下角!
+ * @param i 图片的索引值
  * @param x_downLeft 
  * @param y_downLeft 
  * @param x_upRight 
  * @param y_upRight 
  */
-void cut_Picture(int x_downLeft , int y_downLeft , int x_upRight , int y_upRight);
+void cut_Picture(int i , int x_downLeft , int y_downLeft , int x_upRight , int y_upRight);
 
+/**
+ * @brief 设置图片显示的中心位置x
+ * 
+ * @param x 
+ */
+void set_picture_middle_x(int x);
+
+/**
+ * @brief 设置图片显示的中心位置y
+ * 
+ * @param y 
+ */
+void set_picture_middle_y(int y);

@@ -5,6 +5,7 @@
 #include "libdisplay/display.h"
 #include "libgraphics/imgui.h"
 #include "third_party/dirent.h"
+#include "libgraphics/win32Export.h"
 
 static double winwidth, winheight;// 窗口尺寸
 static int ShowGUI = 0;//切换GUI界面
@@ -72,14 +73,14 @@ void MouseEventProcess(int x, int y, int button, int event)
 // 主函数
 void Main()
 {
-    // 打开控制台，方便用printf/scanf输出/入变量信息，方便调试
+    // // 打开控制台，方便用printf/scanf输出/入变量信息，方便调试
 	InitConsole();
-	//关闭控制台，仅在VS Code环境下使用，若为VS2019或VS2017环境，请注释掉下面这行代码
-	//FreeConsole();
-	// 初始化窗口
-	SetWindowTitle("BMP图片显示器");
-	//SetWindowSize(13.39, 7.48);  // 如果屏幕尺寸不够，则按比例缩小
-	// 获取全屏窗口尺寸
+	// //关闭控制台，仅在VS Code环境下使用，若为VS2019或VS2017环境，请注释掉下面这行代码
+	// //FreeConsole();
+	// // 初始化窗口
+	// SetWindowTitle("BMP图片显示器");
+	// //SetWindowSize(13.39, 7.48);  // 如果屏幕尺寸不够，则按比例缩小
+	// // 获取全屏窗口尺寸
 	double fullwidth = GetFullScreenWidth();
 	double fullheight = GetFullScreenHeight();
 	// 设置窗口尺寸
@@ -88,28 +89,31 @@ void Main()
 	// 初始化图形系统
 	InitGraphics();
 
-	// 获得窗口尺寸
+	// // 获得窗口尺寸
 	winwidth = GetWindowWidth();
 	winheight = GetWindowHeight();
-	printf("窗口尺寸：%.2f %.2f\n", winwidth, winheight);
+	// printf("窗口尺寸：%.2f %.2f\n", winwidth, winheight);
 
-	// 自定义颜色
-	DefineColor("GrayBlue", 0.57, 0.71, 0.83);
+	// // 自定义颜色
+	// DefineColor("GrayBlue", 0.57, 0.71, 0.83);
 
-	// 注册时间响应函数
-	registerCharEvent(CharEventProcess);        // 字符
-	registerKeyboardEvent(KeyboardEventProcess);// 键盘
-	registerMouseEvent(MouseEventProcess);      // 鼠标
+	// // 注册时间响应函数
+	// registerCharEvent(CharEventProcess);        // 字符
+	// registerKeyboardEvent(KeyboardEventProcess);// 键盘
+	// registerMouseEvent(MouseEventProcess);      // 鼠标
 
-	//获取文件信息
-	SearchFiles(BasePatch);
-    // // 设置全屏
-    // windows_width = GetFullScreenWidth();
-    // windows_height = GetFullScreenWidth();
-    // SetWindowSize(windows_width, windows_height);
-    // // int x , y , n ;
-    // // unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
-    // // int size = sizeof(data);
+	// //获取文件信息
+	// SearchFiles(BasePatch);
+
+	//============================================== DEBUG DISPLAY
+    // 设置全屏
+    // winwidth = GetFullScreenWidth();
+    // winheight = GetFullScreenWidth();
+    // SetWindowSize(winwidth, winheight);
+    // int x , y , n ;
+    // unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
+    // int size = sizeof(data);
+	// InitConsole();
     // InitGraphics();
     // SetWindowTitle("MyBmp");
     // // ========================GUI PART==================================
@@ -137,19 +141,25 @@ void Main()
     // // startTimer(0, 15);
     // displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
 
-    // 初始化窗口设置背景颜色为白色
+    // // 初始化窗口设置背景颜色为白色
     // displayFillWithColor(255,255,255);
-
-    // displayPicture("./resource/2.bmp");
-    // clearPicture();
+	// printf("win_width = %d , win_height = %d\n" , winwidth , winheight);
+	// set_picture_middle_x(inchXToPixelX(winwidth/2));
+	// set_picture_middle_y(inchYToPixelY(winheight/2));
     // readInPicture("./resource/2.bmp");
+    // displayPicture(0);
+    // clearPicture(0);
+    // readInPicture("./resource/2.bmp");
+    // right_Rotate_Picture(0);
     // right_Rotate_Picture();
-    // right_Rotate_Picture();
-    // displayPicture();
-
+	// readInPicture("./resource/1.bmp");
+    // displayPicture(0);
+	// clearPicture(0);
+	// displayPicture(1);
+	// clearPicture(1);
     //==============================cur part ==========================//
-    // cut_Picture(0,0,200,200);
-    // displayPicture();
+    // cut_Picture(0 , 0,0,200,200);
+    // displayPicture(0);
 
     //==============================save part =========================//
     // save_Picture("./resource/saved.bmp");

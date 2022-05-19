@@ -1871,12 +1871,12 @@ static double InchesY(int y)
  * These functions convert distances measured in inches to pixels.
  */
 
-static int PixelsX(double x)
+int PixelsX(double x)
 {
     return (Round(x * xResolution + Epsilon));
 }
 
-static int PixelsY(double y)
+int PixelsY(double y)
 {
     return (Round(y * yResolution + Epsilon));
 }
@@ -2017,4 +2017,11 @@ int GetWindowPixelWidth(){
 }
 int GetWindowPixelHeight(){
     return pixelHeight;
+}
+
+int inchXToPixelX(double x){
+    return (Round(x * xResolution + Epsilon));
+}
+int inchYToPixelY(double y){
+    return (Round(y * yResolution + Epsilon));
 }
