@@ -73,7 +73,7 @@ void right_Rotate_Picture(int i );
 
 void left_Rotate_Picture(int i );
 
-void save_Picture(string s);
+void save_Picture(string s , int i);
 
 
 
@@ -110,3 +110,5 @@ int getPrevIndex(int index);
 void expandPicture(int i );
 
 void shrinkPicture(int i );
+
+void retrievePicture(int i);

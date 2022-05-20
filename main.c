@@ -7,22 +7,20 @@
 #include "third_party/dirent.h"
 #include "libgraphics/win32Export.h"
 
-static double winwidth, winheight;// 窗口尺寸
-static int ShowGUI = 0;//切换GUI界面
+static double winwidth, winheight; // 窗口尺寸
+static int ShowGUI = 0;			   //切换GUI界面
 static int ShowAbout = 0;
 static int ShowUseWay = 0;
 static int ShowPictureRegion = 1;
 static int show_more_buttons = 0; // 显示更多按钮
 static int ShowFilesList = 0;
 static char BasePatch[200] = "./resource";
-static char FileName[100][200] = { "" };
+static char FileName[100][200] = {""};
 
 static double mouse_x = 0;
 static double mouse_y = 0;
-static int cur_index = 0 ; // 当前显示图片的Index
+static int cur_index = 0;	   // 当前显示图片的Index
 static int should_display = 0; // 当前是否应该显示图片
-
-
 
 // 清屏函数，provided in libgraphics
 void DisplayClear(void);
@@ -39,7 +37,7 @@ void StartGUI(void);
 // 帮助界面
 void ShowHelp(void);
 
-// 
+//
 void SearchFiles(char *BasePath);
 
 void DrawShowPictureRegion();
@@ -56,20 +54,20 @@ void DrawShowUseWay(void);
 void CharEventProcess(char ch)
 {
 	uiGetChar(ch); // GUI字符输入
-	Display(); //刷新显示
+	Display();	   //刷新显示
 }
 
 // 用户的键盘事件响应函数
 void KeyboardEventProcess(int key, int event)
 {
 	uiGetKeyboard(key, event); // GUI获取键盘
-	Display(); // 刷新显示
+	Display();				   // 刷新显示
 }
 
 // 用户的鼠标事件响应函数
 void MouseEventProcess(int x, int y, int button, int event)
 {
-	uiGetMouse(x, y, button, event); //GUI获取鼠标
+	uiGetMouse(x, y, button, event); // GUI获取鼠标
 	mouse_x = ScaleXInches(x);
 	mouse_y = ScaleYInches(y);
 	Display(); // 刷新显示
@@ -78,14 +76,14 @@ void MouseEventProcess(int x, int y, int button, int event)
 // 主函数
 void Main()
 {
-    // 打开控制台，方便用printf/scanf输出/入变量信息，方便调试
+	// 打开控制台，方便用printf/scanf输出/入变量信息，方便调试
 	InitConsole();
 	//关闭控制台，仅在VS Code环境下使用，若为VS2019或VS2017环境，请注释掉下面这行代码
-	//FreeConsole();
+	// FreeConsole();
 	// 初始化窗口
 	SetWindowTitle("BMP图片显示器");
-	//SetWindowSize(13.39, 7.48);  // 如果屏幕尺寸不够，则按比例缩小
-	// 获取全屏窗口尺寸
+	// SetWindowSize(13.39, 7.48);  // 如果屏幕尺寸不够，则按比例缩小
+	//  获取全屏窗口尺寸
 	double fullwidth = GetFullScreenWidth();
 	double fullheight = GetFullScreenHeight();
 	// 设置窗口尺寸
@@ -98,87 +96,87 @@ void Main()
 	winwidth = GetWindowWidth();
 	winheight = GetWindowHeight();
 	printf("窗口尺寸：%.2f %.2f\n", winwidth, winheight);
-	displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
-	displayFillWithColor(255,255,255);
+	displayViewPort(0, 0, displayGetWindowPixelWidth(), displayGetWindowPixelHeight());
+	displayFillWithColor(255, 255, 255);
 	// 自定义颜色
 	DefineColor("GrayBlue", 0.57, 0.71, 0.83);
 
 	// 注册时间响应函数
-	registerCharEvent(CharEventProcess);        // 字符
-	registerKeyboardEvent(KeyboardEventProcess);// 键盘
-	registerMouseEvent(MouseEventProcess);      // 鼠标
+	registerCharEvent(CharEventProcess);		 // 字符
+	registerKeyboardEvent(KeyboardEventProcess); // 键盘
+	registerMouseEvent(MouseEventProcess);		 // 鼠标
 
 	//获取文件信息
 	SearchFiles(BasePatch);
 
 	//============================================== DEBUG DISPLAY
-    // 设置全屏
-    // winwidth = GetFullScreenWidth();
-    // winheight = GetFullScreenWidth();
-    // SetWindowSize(winwidth, winheight);
-    // int x , y , n ;
-    // unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
-    // int size = sizeof(data);
+	// 设置全屏
+	// winwidth = GetFullScreenWidth();
+	// winheight = GetFullScreenWidth();
+	// SetWindowSize(winwidth, winheight);
+	// int x , y , n ;
+	// unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
+	// int size = sizeof(data);
 	// InitConsole();
-    // InitGraphics();
-    // SetWindowTitle("MyBmp");
-    // // ========================GUI PART==================================
-    // //自定义颜色
-    // DefineColor("GrayBlue", 0.57, 0.71, 0.83);
+	// InitGraphics();
+	// SetWindowTitle("MyBmp");
+	// // ========================GUI PART==================================
+	// //自定义颜色
+	// DefineColor("GrayBlue", 0.57, 0.71, 0.83);
 
-    // // 注册时间响应函数
-    // registerCharEvent(CharEventProcess);         // 字符
-    // registerKeyboardEvent(KeyboardEventProcess); // 键盘
-    // registerMouseEvent(MouseEventProcess);       // 鼠标
+	// // 注册时间响应函数
+	// registerCharEvent(CharEventProcess);         // 字符
+	// registerKeyboardEvent(KeyboardEventProcess); // 键盘
+	// registerMouseEvent(MouseEventProcess);       // 鼠标
 
-    // setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1);
-    // setButtonColors("GrayBlue", "Black", "Dark Gray", "White", 1);
-    // setTextBoxColors("GrayBlue", "Black", "Dark Gray", "White", 1);
+	// setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1);
+	// setButtonColors("GrayBlue", "Black", "Dark Gray", "White", 1);
+	// setTextBoxColors("GrayBlue", "Black", "Dark Gray", "White", 1);
 
-    // =================================================================================
-    // char *s = (char *)malloc(100);
-    // int width = displayGetWindowPixelWidth();
-    // int height = displayGetWindowPixelHeight();
-    // sprintf(s , "x = %d , y = %d , n = %d size = %d width = %d , height = %d" , x , y, n , size , width , height);
-    // MovePen(1,1);
-    // DrawTextString(s);
-    // registerTimerEvent(timerCallback);
-    // 15ms为周期，近似于60FPS
-    // // startTimer(0, 15);
-    // displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
+	// =================================================================================
+	// char *s = (char *)malloc(100);
+	// int width = displayGetWindowPixelWidth();
+	// int height = displayGetWindowPixelHeight();
+	// sprintf(s , "x = %d , y = %d , n = %d size = %d width = %d , height = %d" , x , y, n , size , width , height);
+	// MovePen(1,1);
+	// DrawTextString(s);
+	// registerTimerEvent(timerCallback);
+	// 15ms为周期，近似于60FPS
+	// // startTimer(0, 15);
+	// displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
 
-    // // 初始化窗口设置背景颜色为白色
-    // displayFillWithColor(255,255,255);
+	// // 初始化窗口设置背景颜色为白色
+	// displayFillWithColor(255,255,255);
 	// printf("win_width = %d , win_height = %d\n" , winwidth , winheight);
 	// set_picture_middle_x(inchXToPixelX(winwidth/2));
 	// set_picture_middle_y(inchYToPixelY(winheight/2));
-    // readInPicture("./resource/2.bmp");
-    // displayPicture(0);
-    // clearPicture(0);
-    // readInPicture("./resource/2.bmp");
-    // right_Rotate_Picture(0);
-    // right_Rotate_Picture();
+	// readInPicture("./resource/2.bmp");
+	// displayPicture(0);
+	// clearPicture(0);
+	// readInPicture("./resource/2.bmp");
+	// right_Rotate_Picture(0);
+	// right_Rotate_Picture();
 	// readInPicture("./resource/1.bmp");
-    // displayPicture(0);
+	// displayPicture(0);
 	// clearPicture(0);
 	// displayPicture(1);
 	// clearPicture(1);
-    //==============================cur part ==========================//
-    // cut_Picture(0 , 0,0,200,200);
-    // displayPicture(0);
+	//==============================cur part ==========================//
+	// cut_Picture(0 , 0,0,200,200);
+	// displayPicture(0);
 
-    //==============================save part =========================//
-    // save_Picture("./resource/saved.bmp");
-    // displayPicture("./resource/2.bmp");
+	//==============================save part =========================//
+	// save_Picture("./resource/saved.bmp");
+	// displayPicture("./resource/2.bmp");
 
-    //==============================resize part =======================//
-    // displayPicture("./resource/2.bmp");
-    // clearPicture();
-    // resizePicture(500 ,500);
-    // displayPicture();
-    // clearPicture();
-    // resizePicture(100 ,100);
-    // displayData();
+	//==============================resize part =======================//
+	// displayPicture("./resource/2.bmp");
+	// clearPicture();
+	// resizePicture(500 ,500);
+	// displayPicture();
+	// clearPicture();
+	// resizePicture(100 ,100);
+	// displayData();
 }
 
 //显示函数
@@ -189,69 +187,66 @@ void Display()
 
 	switch (ShowGUI)
 	{
-		case 0://开始界面
-			StartGUI(); 
-			break;
-		case 1://图片显示界面
-			ShowBMP(); 
-			break;
-		case 2://软件帮助界面
-			ShowHelp(); 
-			break;
-		default:break;
+	case 0: //开始界面
+		StartGUI();
+		break;
+	case 1: //图片显示界面
+		ShowBMP();
+		break;
+	case 2: //软件帮助界面
+		ShowHelp();
+		break;
+	default:
+		break;
 	}
 }
 
 // 图片显示界面
 void ShowBMP()
 {
-	static char * menuListFile[] = { "文件",
-		"打开 | Ctrl-O",
-		"关闭 | Ctrl-P",
-		"保存 | Ctrl-S",
-		"另存 | Ctrl-Q",
-		"退出 | Ctrl-E"
-	};
-	static char * menuListTool[] = { "工具",
-		"放大 | Ctrl-A",
-		"缩小 | Ctrl-B",
-		"旋转 | Ctrl-X",
-		"复位 | Ctrl-R",
-		"裁剪 | Ctrl-T",
-		"压缩 | Ctrl-Z",
-		"解压 | Ctrl-U"
-	};
-	static char * menuListHelp[] = { "帮助",
-		"使用方法 | Ctrl-U",
-		"关于"
-	};
+	static char *menuListFile[] = {"文件",
+								   "打开 | Ctrl-O",
+								   "关闭 | Ctrl-P",
+								   "保存 | Ctrl-S",
+								   "另存 | Ctrl-Q",
+								   "退出 | Ctrl-E"};
+	static char *menuListTool[] = {"工具",
+								   "放大 | Ctrl-A",
+								   "缩小 | Ctrl-B",
+								   "旋转 | Ctrl-X",
+								   "复位 | Ctrl-R",
+								   "裁剪 | Ctrl-T",
+								   "压缩 | Ctrl-Z",
+								   "解压 | Ctrl-U"};
+	static char *menuListHelp[] = {"帮助",
+								   "使用方法 | Ctrl-U",
+								   "关于"};
 
 	static char *selectedLabel1 = NULL;
 	static char *selectedLabel2 = NULL;
 
-	double fontHeight = GetFontHeight();//字高
+	double fontHeight = GetFontHeight(); //字高
 	double x = 0;
 	double y = winheight;
-	double h = fontHeight * 1.5;//按钮高度
-	double w = TextStringWidth(menuListHelp[0]) * 3.8;//一级菜单条选项宽度
-	double wlist = TextStringWidth(menuListTool[3]) * 1.5;//二级菜单选项条宽度
+	double h = fontHeight * 1.5;						   //按钮高度
+	double w = TextStringWidth(menuListHelp[0]) * 3.8;	   //一级菜单条选项宽度
+	double wlist = TextStringWidth(menuListTool[3]) * 1.5; //二级菜单选项条宽度
 	double xindent = winheight / 40;
 	static int selection = 0;
 
 	//显示菜单条
-	setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1);//设置菜单条颜色为GrayBlue
+	setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1); //设置菜单条颜色为GrayBlue
 	SetPenSize(2);
 	drawMenuBar(0, y - h, winwidth, h);
 
 	//显示文件菜单
 	SetPenSize(2);
-	setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1);// 设置菜单框颜色为Black，label颜色为Black
+	setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1); // 设置菜单框颜色为Black，label颜色为Black
 	selection = menuList(GenUIID(0), x, y - h, w, wlist, h, menuListFile, sizeof(menuListFile) / sizeof(menuListFile[0]));
 	if (selection > 0)
 	{
 		selectedLabel1 = menuListFile[0];
 		selectedLabel2 = menuListFile[selection];
-
 	}
 	if (selection == 1)
 	{
@@ -261,13 +256,18 @@ void ShowBMP()
 	{
 		ShowFilesList = 0;
 	}
+	if (selection == 3)
+	{
+		if(should_display){
+			save_Picture(pictures[cur_index].name , cur_index);
+		}
+	}
 	if (selection == 5)
 	{
-		ExitGraphics(-1);//选择退出
+		ExitGraphics(-1); //选择退出
 	}
-	
 
-	// 工具菜单	
+	// 工具菜单
 	selection = menuList(GenUIID(0), x + w, y - h, w, wlist, h, menuListTool, sizeof(menuListTool) / sizeof(menuListTool[0]));
 	if (selection > 0)
 	{
@@ -276,26 +276,40 @@ void ShowBMP()
 	}
 
 	// 旋转
-	if(selection == 3){
-		if(should_display){
+	if (selection == 3)
+	{
+		if (should_display)
+		{
 			right_Rotate_Picture(cur_index);
 		}
 	}
 
 	// 放大
-	if(selection == 1){
-		if(should_display){
+	if (selection == 1)
+	{
+		if (should_display)
+		{
 			expandPicture(cur_index);
 		}
 	}
 
 	// 缩小
-	if(selection == 2){
-		if(should_display){
+	if (selection == 2)
+	{
+		if (should_display)
+		{
 			shrinkPicture(cur_index);
 		}
 	}
 
+	// 复位
+	if (selection == 4)
+	{
+		if (should_display)
+		{
+			retrievePicture(cur_index);
+		}
+	}
 
 	// 帮助菜单
 	selection = menuList(GenUIID(0), x + 2 * w, y - h, w, wlist, h, menuListHelp, sizeof(menuListHelp) / sizeof(menuListHelp[0]));
@@ -337,7 +351,8 @@ void ShowBMP()
 
 	// 返回按钮
 	SetPenSize(1);
-	if (button(GenUIID(0), 0, fontHeight * 4, winwidth / 12,fontHeight * 2.5, "返回")) {
+	if (button(GenUIID(0), 0, fontHeight * 4, winwidth / 12, fontHeight * 2.5, "返回"))
+	{
 		ShowAbout = 0;
 		ShowUseWay = 0;
 		printf("%s %s", selectedLabel1, selectedLabel2);
@@ -345,12 +360,11 @@ void ShowBMP()
 		{
 			// 显示图片显示区域
 			ShowPictureRegion = 1;
-			// 
+			//
 		}
 		else
 		{
 			ShowGUI = 0;
-
 		}
 		selectedLabel1 = NULL;
 		selectedLabel2 = NULL;
@@ -360,10 +374,10 @@ void ShowBMP()
 	drawMenuBar(0, 0, winwidth, fontHeight * 3);
 	SetPenColor("black");
 	SetPointSize(2);
-	drawLabel(0, fontHeight*2, "上一步菜单操作为: ");
+	drawLabel(0, fontHeight * 2, "上一步菜单操作为: ");
 	SetPenColor("Red");
-	drawLabel(0, fontHeight*0.4, selectedLabel1);
-	drawLabel(TextStringWidth(menuListHelp[0])*2, fontHeight*0.4, selectedLabel2);
+	drawLabel(0, fontHeight * 0.4, selectedLabel1);
+	drawLabel(TextStringWidth(menuListHelp[0]) * 2, fontHeight * 0.4, selectedLabel2);
 }
 
 #if 0
@@ -457,98 +471,97 @@ void drawEditText()
 }
 #endif
 
-
 void StartGUI()
 {
 
-	static char* menuListHelp[] = { "帮助",
-	"使用方法",
-	"关于", };
+	static char *menuListHelp[] = {
+		"帮助",
+		"使用方法",
+		"关于",
+	};
 
-	double fontHeight = GetFontHeight();//字高
-	double h = fontHeight * 2.5;//按钮高度
-	double w = winwidth / 6;//按钮宽度
-	double x = winwidth / 2 - w;// 按钮基准坐标
-	double y = winheight / 2 - fontHeight;// 按钮基准坐标
-	double w1 = TextStringWidth(menuListHelp[0]) * 1.5;//一级菜单条选项宽度
-	double wlist = TextStringWidth(menuListHelp[1]) * 1.5;//二级菜单选项条宽度
-	double h1 = fontHeight * 1.5;//菜单选项高度
-	static int selection = 0;//菜单选项
+	double fontHeight = GetFontHeight();				   //字高
+	double h = fontHeight * 2.5;						   //按钮高度
+	double w = winwidth / 6;							   //按钮宽度
+	double x = winwidth / 2 - w;						   // 按钮基准坐标
+	double y = winheight / 2 - fontHeight;				   // 按钮基准坐标
+	double w1 = TextStringWidth(menuListHelp[0]) * 1.5;	   //一级菜单条选项宽度
+	double wlist = TextStringWidth(menuListHelp[1]) * 1.5; //二级菜单选项条宽度
+	double h1 = fontHeight * 1.5;						   //菜单选项高度
+	static int selection = 0;							   //菜单选项
 
+	static char *selectedLabel1 = NULL;
+	static char *selectedLabel2 = NULL;
 
-	static char * selectedLabel1 = NULL;
-	static char * selectedLabel2 = NULL;
-
-
-	setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1);//设置菜单条颜色为GrayBlue
+	setMenuColors("GrayBlue", "Black", "Dark Gray", "White", 1); //设置菜单条颜色为GrayBlue
 	SetPenSize(1);
-	drawMenuBar(0, winheight - h1, winwidth, h1);//菜单栏
+	drawMenuBar(0, winheight - h1, winwidth, h1); //菜单栏
 
 	selection = menuList(GenUIID(0), 0, winheight - h1, w1, wlist, h1, menuListHelp, sizeof(menuListHelp) / sizeof(menuListHelp[0]));
 
-	if (selection > 0) 
+	if (selection > 0)
 	{
 		selectedLabel1 = menuListHelp[0];
 		selectedLabel2 = menuListHelp[selection];
 	}
-	if (selection == 1) 
+	if (selection == 1)
 	{
 		ShowUseWay = 1;
 		ShowAbout = 0;
 		ShowGUI = 2;
 	}
-	if (selection == 2) 
+	if (selection == 2)
 	{
 		ShowUseWay = 1;
 		ShowAbout = 0;
 		ShowGUI = 2;
 	}
-	if (ShowUseWay) 
+	if (ShowUseWay)
 	{
 		DrawShowUseWay();
 	}
-	if (ShowAbout) 
+	if (ShowAbout)
 	{
 		DrawShowAbout();
 	}
 
-
 	SetPenSize(1);
-	setButtonColors("GrayBlue", "Black", "Dark Gray", "White", 1);// 设置按钮颜色
+	setButtonColors("GrayBlue", "Black", "Dark Gray", "White", 1); // 设置按钮颜色
 
 	DrawEditText();
-	if (button(GenUIID(0), x, y + h * 1.5, w , h,show_more_buttons ? "收起文件" : "展示文件"))
+	if (button(GenUIID(0), x, y + h * 1.5, w, h, show_more_buttons ? "收起文件" : "展示文件"))
 	{
 		show_more_buttons = !show_more_buttons;
 	}
-	
+
 	if (show_more_buttons)
 	{
 		int k = 0;
-		//for (k = 0; k < 12; k++)
+		// for (k = 0; k < 12; k++)
 		//{
 		//	char name[128];
 		//	strcpy(name, FileName[k]);
-		//	
+		//
 		//	//printf("button %d %s %s\n", Uid[0]+k, name, FileName[k]);
-		//}
+		// }
 
 		for (k = 0; k < 12; k++)
 		{
 			char name[128];
 			strcpy(name, FileName[k]);
-			button( GenUIID(k), x + w * 1.1, (y + h * 1.8) - k * h * 0.8, w, h * 0.7, name);
+			button(GenUIID(k), x + w * 1.1, (y + h * 1.8) - k * h * 0.8, w, h * 0.7, name);
 			printf("button %s %s\n", name, FileName[k]);
-
 		}
 	}
 
-	if (button(GenUIID(0), x, y, w, h, "进入显示图片界面")) {
+	if (button(GenUIID(0), x, y, w, h, "进入显示图片界面"))
+	{
 		selectedLabel1 = NULL;
 		selectedLabel2 = NULL;
 		ShowGUI = 1;
 	}
-	if (button(GenUIID(0), x, y - h * 1.5, w, h, "退出")) ExitGraphics();
+	if (button(GenUIID(0), x, y - h * 1.5, w, h, "退出"))
+		ExitGraphics();
 
 	// 显示菜单上一步操作
 	drawMenuBar(0, 0, winwidth, fontHeight * 3);
@@ -556,16 +569,16 @@ void StartGUI()
 	SetPointSize(2);
 	drawLabel(0, fontHeight * 2, "上一步菜单操作为: ");
 	SetPenColor("Red");
-	drawLabel(0, fontHeight*0.4, selectedLabel1);
-	drawLabel(TextStringWidth(menuListHelp[0]) * 2, fontHeight*0.4, selectedLabel2);
+	drawLabel(0, fontHeight * 0.4, selectedLabel1);
+	drawLabel(TextStringWidth(menuListHelp[0]) * 2, fontHeight * 0.4, selectedLabel2);
 }
 
 void DrawEditText(void)
 {
 	double fontHeight = GetFontHeight();
-	double h = fontHeight * 2.5;// 文本编辑框高度
-	double w = winwidth / 6;// 文本编辑框宽度
-	double x = winwidth / 2 - w;//x坐标基准
+	double h = fontHeight * 2.5; // 文本编辑框高度
+	double w = winwidth / 6;	 // 文本编辑框宽度
+	double x = winwidth / 2 - w; // x坐标基准
 	double y = winheight / 2 - fontHeight + h * 3;
 
 	static char temp[100] = "../../bmp";
@@ -573,7 +586,7 @@ void DrawEditText(void)
 	static char results[200] = "";
 
 	SetPenColor("Brown");
-	drawLabel(x - fontHeight / 2 - TextStringWidth("bmp文件路径: "),   y + fontHeight * 0.7, "bmp文件路径: ");
+	drawLabel(x - fontHeight / 2 - TextStringWidth("bmp文件路径: "), y + fontHeight * 0.7, "bmp文件路径: ");
 
 	if (button(GenUIID(0), x + w * 1.3, y, w * 0.5, h, "确定修改"))
 	{
@@ -586,12 +599,11 @@ void DrawEditText(void)
 		SearchFiles(BasePatch);
 	}
 
-
-	setTextBoxColors("GrayBlue", "Black", "Dark Gray", "White", 1);// 设置文本编辑框颜色
-	if (textbox(GenUIID(0), x, y, w, h, temp, sizeof(temp)) )
+	setTextBoxColors("GrayBlue", "Black", "Dark Gray", "White", 1); // 设置文本编辑框颜色
+	if (textbox(GenUIID(0), x, y, w, h, temp, sizeof(temp)))
 	{
 
-		//printf("%s\n", BasePatch);
+		// printf("%s\n", BasePatch);
 	}
 
 	SetPenColor("Black");
@@ -600,25 +612,27 @@ void DrawEditText(void)
 
 void ShowHelp()
 {
-	double fontHeight = GetFontHeight();//字高
-	double w = winwidth / 12;//返回按钮宽度
-	double h = fontHeight * 2.5;//返回按钮高度
-	int selection;//菜单选项
-	static char* menuListHelp[] = { "帮助",
+	double fontHeight = GetFontHeight(); //字高
+	double w = winwidth / 12;			 //返回按钮宽度
+	double h = fontHeight * 2.5;		 //返回按钮高度
+	int selection;						 //菜单选项
+	static char *menuListHelp[] = {
+		"帮助",
 		"使用方法",
-		"关于", };
-	static char* selectedLabel1 = NULL;
-	static char* selectedLabel2 = NULL;
+		"关于",
+	};
+	static char *selectedLabel1 = NULL;
+	static char *selectedLabel2 = NULL;
 
-	drawMenuBar(0, winheight - fontHeight * 1.5, winwidth, fontHeight * 1.5);//帮助菜单条
-	selection = menuList(GenUIID(0), 0, winheight - fontHeight * 1.5, TextStringWidth(menuListHelp[0]) * 1.5, \
-		TextStringWidth(menuListHelp[1]) * 1.2, fontHeight * 1.5, menuListHelp, sizeof(menuListHelp) / sizeof(menuListHelp[0]));
-	if (selection > 0) 
+	drawMenuBar(0, winheight - fontHeight * 1.5, winwidth, fontHeight * 1.5); //帮助菜单条
+	selection = menuList(GenUIID(0), 0, winheight - fontHeight * 1.5, TextStringWidth(menuListHelp[0]) * 1.5,
+						 TextStringWidth(menuListHelp[1]) * 1.2, fontHeight * 1.5, menuListHelp, sizeof(menuListHelp) / sizeof(menuListHelp[0]));
+	if (selection > 0)
 	{
 		selectedLabel1 = menuListHelp[0];
 		selectedLabel2 = menuListHelp[selection];
 	}
-	if (selection == 1) 
+	if (selection == 1)
 	{
 		ShowUseWay = 1;
 		ShowAbout = 0;
@@ -630,17 +644,18 @@ void ShowHelp()
 		ShowAbout = 1;
 		ShowGUI = 2;
 	}
-	if (ShowUseWay) 
+	if (ShowUseWay)
 	{
 		DrawShowUseWay();
 	}
-	if (ShowAbout) 
+	if (ShowAbout)
 	{
 		DrawShowAbout();
 	}
 
 	// 返回按钮
-	if (button(GenUIID(0), 0, fontHeight * 4, w, h, "返回")) {
+	if (button(GenUIID(0), 0, fontHeight * 4, w, h, "返回"))
+	{
 		ShowAbout = 0;
 		ShowUseWay = 0;
 		ShowGUI = 0;
@@ -654,10 +669,8 @@ void ShowHelp()
 	SetPointSize(2);
 	drawLabel(0, fontHeight * 2, "上一步菜单操作为: ");
 	SetPenColor("Red");
-	drawLabel(0, fontHeight*0.4, selectedLabel1);
-	drawLabel(TextStringWidth(menuListHelp[0]) * 2, fontHeight*0.4, selectedLabel2);
-
-
+	drawLabel(0, fontHeight * 0.4, selectedLabel1);
+	drawLabel(TextStringWidth(menuListHelp[0]) * 2, fontHeight * 0.4, selectedLabel2);
 }
 
 void DrawShowPictureRegion()
@@ -675,10 +688,11 @@ void DrawShowPictureRegion()
 	drawBox(bmpx, bmpy, bmpw, bmph, 1, "bmp图片显示区域", 'C', "Red");
 	printf("%d\n", GetPenSize());
 	// 设置图片显示的中心位置
-	set_picture_middle_x(inchXToPixelX(bmpx + bmpw/2));
-	set_picture_middle_y(inchYToPixelY(bmpy + bmph/2));
+	set_picture_middle_x(inchXToPixelX(bmpx + bmpw / 2));
+	set_picture_middle_y(inchYToPixelY(bmpy + bmph / 2));
 	// 如果需要显示图片，在这里显示图片！
-	if(should_display){
+	if (should_display)
+	{
 		displayPicture(cur_index);
 	}
 	// 快捷键小图标
@@ -727,18 +741,17 @@ void DrawShowPictureRegion()
 	SetPenSize(2);
 	DrawLine(buttonw * 0.3, 0);
 	MovePen(bmpx + buttonw * 4 + buttonw / 2, fontHeight * 3.1 + buttonh * 0.3);
-	DrawLine(0,buttonh * 0.4);
-
+	DrawLine(0, buttonh * 0.4);
 }
 
 void DrawShowFilesList()
 {
 	SetPenSize(1);
-	double fontHeight = GetFontHeight();//字高
-	double h = fontHeight * 1.5;//按钮高度
-	double w = winwidth / 11;//按钮宽度
-	double x = ScaleXInches(3);//基准坐标x
-	double y = winheight - fontHeight * 10;//基准坐标y
+	double fontHeight = GetFontHeight();	//字高
+	double h = fontHeight * 1.5;			//按钮高度
+	double w = winwidth / 11;				//按钮宽度
+	double x = ScaleXInches(3);				//基准坐标x
+	double y = winheight - fontHeight * 10; //基准坐标y
 	SetPenColor("Blue");
 	drawLabel(x, y, "文件列表： ");
 
@@ -746,10 +759,11 @@ void DrawShowFilesList()
 	{
 		char name[128];
 		strcpy(name, FileName[k]);
-		if(button(GenUIID(k), x, y - fontHeight * 2- k * h * 1.2, w, h, name)){
+		if (button(GenUIID(k), x, y - fontHeight * 2 - k * h * 1.2, w, h, name))
+		{
 			// ./resource/2.bmp
 			char name_full[156] = "./resource/";
-			strcat(name_full , name);
+			strcat(name_full, name);
 			readInPicture(name_full);
 			should_display = 1;
 		}
@@ -757,18 +771,20 @@ void DrawShowFilesList()
 	}
 }
 
-void DrawShowUseWay() {
-	double fontHeight = GetFontHeight();//字高
+void DrawShowUseWay()
+{
+	double fontHeight = GetFontHeight(); //字高
 	double x = winwidth / 5;
 	double y = winheight - winheight / 5;
 
 	SetPenColor("Black");
-	drawLabel(x , y, "注意事项1：默认bmp文件路径为../../bmp；若需修改，在文本框中修改后，点击右边【确认修改】按钮。");
+	drawLabel(x, y, "注意事项1：默认bmp文件路径为../../bmp；若需修改，在文本框中修改后，点击右边【确认修改】按钮。");
 	drawLabel(x, y -= fontHeight * 1.5, "注意事项2： 由于显示页面限制，文件夹中bmp文件数目不能大于12。");
 }
 
-void DrawShowAbout() {
-	double fontHeight = GetFontHeight();//字高
+void DrawShowAbout()
+{
+	double fontHeight = GetFontHeight(); //字高
 	double x = winwidth / 4;
 	double y = winheight - winheight / 4;
 	SetPenColor("Black");
@@ -777,7 +793,7 @@ void DrawShowAbout() {
 
 void SearchFiles(char *BasePath)
 {
-	char path[200];	// 路径
+	char path[200]; // 路径
 	struct dirent *dp;
 	DIR *dir = opendir(BasePath);
 	int i = 0;
@@ -793,14 +809,14 @@ void SearchFiles(char *BasePath)
 		if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
 		{
 			// 将文件名和路径进行拼接形成一个完整路径
-			//printf("%s\n", dp->d_name);
+			// printf("%s\n", dp->d_name);
 			strcpy(FileName[i], dp->d_name);
-			//printf("%s\n", FileName[i]);
+			// printf("%s\n", FileName[i]);
 			i++;
 			strcpy(path, BasePath);
 			strcat(path, "/");
 			strcat(path, dp->d_name);
-			SearchFiles(path);// 递归遍历
+			SearchFiles(path); // 递归遍历
 		}
 	}
 	closedir(dir);

@@ -350,3 +350,9 @@ void expandPicture(int i ){
 void shrinkPicture(int i ){
     resizePicture(i,pictures[i].picture_width*0.9 , pictures[i].picture_height*0.9);
 }
+
+void retrievePicture(int i){
+    int n ;
+    stbi_image_free(pictures[i].data);
+    pictures[i].data = stbi_load(pictures[i].name, &pictures[i].picture_width, &pictures[i].picture_height, &n, 4);
+}
