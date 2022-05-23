@@ -125,6 +125,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="libdisplay\display.c" />
+    <ClCompile Include="libdisplay\zip.c" />
     <ClCompile Include="libgraphics\exceptio.c" />
     <ClCompile Include="libgraphics\genlib.c" />
     <ClCompile Include="libgraphics\graphics.c" />
@@ -136,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libdisplay\display.h" />
+    <ClInclude Include="libdisplay\zip.h" />
     <ClInclude Include="libgraphics\exception.h" />
     <ClInclude Include="libgraphics\extgraph.h" />
     <ClInclude Include="libgraphics\gcalloc.h" />

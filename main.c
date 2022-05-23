@@ -6,6 +6,7 @@
 #include "libgraphics/imgui.h"
 #include "third_party/dirent.h"
 #include "libgraphics/win32Export.h"
+#include "libdisplay/zip.h"
 
 static double winwidth, winheight; // 窗口尺寸
 static int ShowGUI = 0;			   //切换GUI界面
@@ -311,6 +312,20 @@ void ShowBMP()
 		}
 	}
 
+	// 保存并且压缩
+	if (selection == 6)
+	{
+		if (should_display)
+		{
+			save_Picture(pictures[cur_index].name , cur_index);
+			char compressed_name[200];
+			memset(compressed_name ,0 , 200);
+			strncpy(compressed_name,pictures[cur_index].name,128);
+			strcat(compressed_name , ".huf");
+			compress(pictures[cur_index].name , compressed_name);
+		}
+	}
+
 	// 帮助菜单
 	selection = menuList(GenUIID(0), x + 2 * w, y - h, w, wlist, h, menuListHelp, sizeof(menuListHelp) / sizeof(menuListHelp[0]));
 	if (selection > 0)
@@ -581,7 +596,7 @@ void DrawEditText(void)
 	double x = winwidth / 2 - w; // x坐标基准
 	double y = winheight / 2 - fontHeight + h * 3;
 
-	static char temp[100] = "../../bmp";
+	static char temp[100] = "./resource";
 
 	static char results[200] = "";
 
@@ -746,6 +761,7 @@ void DrawShowPictureRegion()
 
 void DrawShowFilesList()
 {
+	SearchFiles(BasePatch);
 	SetPenSize(1);
 	double fontHeight = GetFontHeight();	//字高
 	double h = fontHeight * 1.5;			//按钮高度
@@ -761,11 +777,24 @@ void DrawShowFilesList()
 		strcpy(name, FileName[k]);
 		if (button(GenUIID(k), x, y - fontHeight * 2 - k * h * 1.2, w, h, name))
 		{
-			// ./resource/2.bmp
 			char name_full[156] = "./resource/";
 			strcat(name_full, name);
-			readInPicture(name_full);
-			should_display = 1;
+			char *temp;
+			// 需要判断是否含有后缀.huf
+			if((temp = strstr(name_full , ".huf")) != NULL){
+				// 含有后缀.huf
+				// 直接解压
+				char uncompressed_name[156];
+				memset(uncompressed_name , 0 , 156);
+				strncpy(uncompressed_name , name_full , temp - name_full);
+				printf("file name = %s\n" , uncompressed_name); 
+				uncompress(name_full , uncompressed_name);
+			}else{
+				readInPicture(name_full);
+				should_display = 1;
+			}
+			// ./resource/2.bmp
+
 		}
 		printf("button %s %s\n", name, FileName[k]);
 	}

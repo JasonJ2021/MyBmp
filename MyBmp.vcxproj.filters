@@ -51,6 +51,9 @@
     <ClCompile Include="libgraphics\imgui.c">
       <Filter>源文件\libgraphics</Filter>
     </ClCompile>
+    <ClCompile Include="libdisplay\zip.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libgraphics\exception.h">
@@ -90,6 +93,9 @@
       <Filter>源文件\libgraphics</Filter>
     </ClInclude>
     <ClInclude Include="third_party\dirent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libdisplay\zip.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
