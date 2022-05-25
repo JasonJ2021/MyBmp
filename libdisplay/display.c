@@ -287,10 +287,10 @@ void cut_Picture(int i , int x_downLeft , int y_downLeft , int x_upRight , int y
     unsigned char *src_ptr;
     unsigned char *dst_ptr;
     // 需要创建一个base_data指针 , 指向src_data中剪切的开始位置
-    unsigned char *base_data = pictures[i].data + src_stride * (pictures[i].picture_height - y_downLeft - output_width - 1 ) + 4 * x_downLeft;
-    for (int row = 0; row < output_width; ++row)
+    unsigned char *base_data = pictures[i].data + src_stride * (pictures[i].picture_height - y_downLeft - output_height - 1) + 4 * x_downLeft;
+    for (int row = 0; row < output_height; ++row)
     {
-        for (int col = 0; col < output_height; ++col)
+        for (int col = 0; col < output_width; ++col)
         {
             src_ptr = base_data + row * src_stride + col * 4;
             dst_ptr = temp_data + row * dst_stride + col * 4;
@@ -343,7 +343,9 @@ int getPrevIndex(int index){
 }
 
 
-void expandPicture(int i ){
+void expandPicture(int i ,int max_width , int max_height){
+    if((int)(pictures[i].picture_height*1.1) > max_height)return;
+    if((int)(pictures[i].picture_width*1.1) > max_width)return;
     resizePicture(i,pictures[i].picture_width*1.1 , pictures[i].picture_height*1.1);
 }
 
@@ -356,3 +358,4 @@ void retrievePicture(int i){
     stbi_image_free(pictures[i].data);
     pictures[i].data = stbi_load(pictures[i].name, &pictures[i].picture_width, &pictures[i].picture_height, &n, 4);
 }
+

@@ -15,7 +15,8 @@ static int ShowUseWay = 0;
 static int ShowPictureRegion = 1;
 static int show_more_buttons = 0; // 显示更多按钮
 static int ShowFilesList = 0;
-static int ShowSaveAnother = 0;// 另存为
+static int ShowCropBox = 0;
+static int ShowSaveAnother = 0; // 另存为
 static char BasePatch[200] = "./resource";
 static char FileName[100][200] = {""};
 
@@ -23,6 +24,8 @@ static double mouse_x = 0;
 static double mouse_y = 0;
 static int cur_index = 0;	   // 当前显示图片的Index
 static int should_display = 0; // 当前是否应该显示图片
+static int max_width = 0;	   // 显示框宽度
+static int max_height = 0;	   // 显示框高度
 
 // 清屏函数，provided in libgraphics
 void DisplayClear(void);
@@ -44,7 +47,7 @@ void SearchFiles(char *BasePath);
 
 void DrawShowSaveAnother();
 void DrawShowPictureRegion();
-
+void DrawShowCropBox();
 void DrawShowFilesList(void);
 
 void DrawEditText(void);
@@ -261,8 +264,9 @@ void ShowBMP()
 	}
 	if (selection == 3) // 保存
 	{
-		if(should_display){
-			save_Picture(pictures[cur_index].name , cur_index);
+		if (should_display)
+		{
+			save_Picture(pictures[cur_index].name, cur_index);
 		}
 	}
 	if (selection == 4) // 另存为
@@ -271,7 +275,7 @@ void ShowBMP()
 	}
 	if (selection == 5) // 选择退出
 	{
-		ExitGraphics(-1); 
+		ExitGraphics(-1);
 	}
 
 	// 工具菜单
@@ -282,21 +286,12 @@ void ShowBMP()
 		selectedLabel2 = menuListTool[selection];
 	}
 
-	// 旋转
-	if (selection == 3)
-	{
-		if (should_display)
-		{
-			right_Rotate_Picture(cur_index);
-		}
-	}
-
 	// 放大
 	if (selection == 1)
 	{
 		if (should_display)
 		{
-			expandPicture(cur_index);
+			expandPicture(cur_index, max_width, max_height);
 		}
 	}
 
@@ -309,6 +304,15 @@ void ShowBMP()
 		}
 	}
 
+	// 旋转
+	if (selection == 3)
+	{
+		if (should_display)
+		{
+			right_Rotate_Picture(cur_index);
+		}
+	}
+
 	// 复位
 	if (selection == 4)
 	{
@@ -318,17 +322,26 @@ void ShowBMP()
 		}
 	}
 
+	// 裁剪
+	if (selection == 5)
+	{
+		if (should_display)
+		{
+			ShowCropBox = 1;
+			ShowFilesList = 0;
+		}
+	}
 	// 保存并且压缩
 	if (selection == 6)
 	{
 		if (should_display)
 		{
-			save_Picture(pictures[cur_index].name , cur_index);
+			save_Picture(pictures[cur_index].name, cur_index);
 			char compressed_name[200];
-			memset(compressed_name ,0 , 200);
-			strncpy(compressed_name,pictures[cur_index].name,128);
-			strcat(compressed_name , ".huf");
-			compress(pictures[cur_index].name , compressed_name);
+			memset(compressed_name, 0, 200);
+			strncpy(compressed_name, pictures[cur_index].name, 128);
+			strcat(compressed_name, ".huf");
+			compress(pictures[cur_index].name, compressed_name);
 		}
 	}
 
@@ -372,7 +385,10 @@ void ShowBMP()
 	{
 		DrawShowPictureRegion();
 	}
-
+	if (ShowCropBox)
+	{
+		DrawShowCropBox();
+	}
 	// 返回按钮
 	SetPenSize(1);
 	if (button(GenUIID(0), 0, fontHeight * 4, winwidth / 12, fontHeight * 2.5, "返回"))
@@ -699,20 +715,72 @@ void ShowHelp()
 
 void DrawShowSaveAnother() // 另存为文件名编辑框
 {
-	static char temp[100] = "另存为名称";
+	static char temp[100] = "另存为相对路径";
 	double fontHeight = GetFontHeight();
 	double x = TextStringWidth("另存 | Ctrl-Q") * 1.5;
 	double w = TextStringWidth("确定") * 1.2;
 	drawLabel(x, winheight - fontHeight * 7, "另存为:  ");
 
-	textbox(GenUIID(0),x, winheight - fontHeight * 9, x, fontHeight * 1.5, temp, sizeof(temp));
+	textbox(GenUIID(0), x, winheight - fontHeight * 9, x, fontHeight * 1.5, temp, sizeof(temp));
 
 	SetPenSize(1);
 	if (button(GenUIID(0), x * 1.3, winheight - fontHeight * 11, w, fontHeight * 1.2, "确定"))
 	{
 		// 新建的文件名 = temp;
 		ShowSaveAnother = 0;
+		if (should_display)
+		{
+			save_Picture(temp, cur_index);
+		}
 	}
+}
+
+void DrawShowCropBox()
+{
+	SetPenSize(1);
+	double fontHeight = GetFontHeight();	//字高
+	double h = fontHeight * 1.2;			//文字框高度
+	double w = TextStringWidth("0.55") * 3; //文本框宽度
+	double x = ScaleXInches(3);				//基准坐标x
+	double y = winheight - fontHeight * 10; //基准坐标y
+	double dx = TextStringWidth("x1:") * 1.2;
+	static char x1[10] = "0.0";
+	static char x2[10] = "0.5";
+	static char y1[10] = "0.0";
+	static char y2[10] = "0.5";
+
+	drawLabel(x, y, "请输入裁剪尺寸: ");
+
+	drawLabel(x, y -= h * 1.5, "x1:");
+	drawLabel(x, y -= h * 1.5, "x2:");
+	drawLabel(x, y -= h * 1.5, "y1:");
+	drawLabel(x, y -= h * 1.5, "y2:");
+	if (button(GenUIID(0), x + TextStringWidth("请输入裁剪尺寸: "), y, w / 2, fontHeight * 1.5, "确定"))
+	{
+		// 赋值
+		// printf("x1=%s x2=%s y1=%s y2=%s\n", x1, x2, y1, y2);
+		// sscanf(x1, "%lf", &double型变量);
+		// sscanf(x2, "%lf", &double型变量);
+		printf("width = %d , height = %d\n", pictures[cur_index].picture_width, pictures[cur_index].picture_height);
+		int x1_d = atof(x1) * pictures[cur_index].picture_width;
+		int y1_d = atof(y1) * pictures[cur_index].picture_height;
+		int x2_d = atof(x2) * pictures[cur_index].picture_width;
+		int y2_d = atof(y2) * pictures[cur_index].picture_height;
+		printf("x1=%d y1=%d x2=%d y2=%d\n", x1_d, y1_d, x2_d, y2_d);
+		if (should_display)
+		{
+			cut_Picture(cur_index, x1_d, y1_d, x2_d, y2_d);
+		}
+		ShowCropBox = 0;
+	}
+
+	y = winheight - fontHeight * 10;
+	textbox(GenUIID(0), x + dx, y -= h * 1.5, w, h, x1, sizeof(x1));
+
+	textbox(GenUIID(0), x + dx, y -= h * 1.5, w, h, x2, sizeof(x2));
+	textbox(GenUIID(0), x + dx, y -= h * 1.5, w, h, y1, sizeof(y1));
+
+	textbox(GenUIID(0), x + dx, y -= h * 1.5, w, h, y2, sizeof(y2));
 }
 
 void DrawShowPictureRegion()
@@ -737,6 +805,9 @@ void DrawShowPictureRegion()
 	SetPenColor("Gray");
 	drawBox(bmpx, bmpy, bmpw, bmph, 1, "bmp图片显示区域", 'C', "Red");
 	printf("%d\n", GetPenSize());
+	// 设置图片最大高度、宽度
+	max_height = inchXToPixelX(bmph);
+	max_width = inchYToPixelY(bmpw);
 	// 设置图片显示的中心位置
 	set_picture_middle_x(inchXToPixelX(bmpx + bmpw / 2));
 	set_picture_middle_y(inchYToPixelY(bmpy + bmph / 2));
@@ -785,7 +856,7 @@ void DrawShowPictureRegion()
 	if (button(GenUIID(0), bmpx + buttonw * 4, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 放大图片
-		expandPicture(cur_index);
+		expandPicture(cur_index, max_width, max_height);
 	}
 	MovePen(bmpx + buttonw * 4 + buttonw * 0.35, fontHeight * 3.1 + buttonh / 2);
 	SetPenSize(2);
@@ -816,20 +887,22 @@ void DrawShowFilesList()
 			strcat(name_full, name);
 			char *temp;
 			// 需要判断是否含有后缀.huf
-			if((temp = strstr(name_full , ".huf")) != NULL){
+			if ((temp = strstr(name_full, ".huf")) != NULL)
+			{
 				// 含有后缀.huf
 				// 直接解压
 				char uncompressed_name[156];
-				memset(uncompressed_name , 0 , 156);
-				strncpy(uncompressed_name , name_full , temp - name_full);
-				printf("file name = %s\n" , uncompressed_name); 
-				uncompress(name_full , uncompressed_name);
-			}else{
+				memset(uncompressed_name, 0, 156);
+				strncpy(uncompressed_name, name_full, temp - name_full);
+				printf("file name = %s\n", uncompressed_name);
+				uncompress(name_full, uncompressed_name);
+			}
+			else
+			{
 				readInPicture(name_full);
 				should_display = 1;
 			}
 			// ./resource/2.bmp
-
 		}
 		printf("button %s %s\n", name, FileName[k]);
 	}

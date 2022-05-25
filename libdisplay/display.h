@@ -107,7 +107,7 @@ int getNextIndex(int index);
 int getPrevIndex(int index);
 
 
-void expandPicture(int i );
+void expandPicture(int i ,int max_width , int max_height);
 
 void shrinkPicture(int i );
 
