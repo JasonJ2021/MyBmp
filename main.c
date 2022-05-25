@@ -15,6 +15,7 @@ static int ShowUseWay = 0;
 static int ShowPictureRegion = 1;
 static int show_more_buttons = 0; // 显示更多按钮
 static int ShowFilesList = 0;
+static int ShowSaveAnother = 0;// 另存为
 static char BasePatch[200] = "./resource";
 static char FileName[100][200] = {""};
 
@@ -41,6 +42,7 @@ void ShowHelp(void);
 //
 void SearchFiles(char *BasePath);
 
+void DrawShowSaveAnother();
 void DrawShowPictureRegion();
 
 void DrawShowFilesList(void);
@@ -249,23 +251,27 @@ void ShowBMP()
 		selectedLabel1 = menuListFile[0];
 		selectedLabel2 = menuListFile[selection];
 	}
-	if (selection == 1)
+	if (selection == 1) // 打开
 	{
 		ShowFilesList = 1;
 	}
-	if (selection == 2)
+	if (selection == 2) // 关闭
 	{
 		ShowFilesList = 0;
 	}
-	if (selection == 3)
+	if (selection == 3) // 保存
 	{
 		if(should_display){
 			save_Picture(pictures[cur_index].name , cur_index);
 		}
 	}
-	if (selection == 5)
+	if (selection == 4) // 另存为
 	{
-		ExitGraphics(-1); //选择退出
+		ShowSaveAnother = 1;
+	}
+	if (selection == 5) // 选择退出
+	{
+		ExitGraphics(-1); 
 	}
 
 	// 工具菜单
@@ -350,7 +356,10 @@ void ShowBMP()
 	{
 		DrawShowFilesList();
 	}
-
+	if (ShowSaveAnother)
+	{
+		DrawShowSaveAnother();
+	}
 	if (ShowUseWay)
 	{
 		DrawShowUseWay();
@@ -688,6 +697,24 @@ void ShowHelp()
 	drawLabel(TextStringWidth(menuListHelp[0]) * 2, fontHeight * 0.4, selectedLabel2);
 }
 
+void DrawShowSaveAnother() // 另存为文件名编辑框
+{
+	static char temp[100] = "另存为名称";
+	double fontHeight = GetFontHeight();
+	double x = TextStringWidth("另存 | Ctrl-Q") * 1.5;
+	double w = TextStringWidth("确定") * 1.2;
+	drawLabel(x, winheight - fontHeight * 7, "另存为:  ");
+
+	textbox(GenUIID(0),x, winheight - fontHeight * 9, x, fontHeight * 1.5, temp, sizeof(temp));
+
+	SetPenSize(1);
+	if (button(GenUIID(0), x * 1.3, winheight - fontHeight * 11, w, fontHeight * 1.2, "确定"))
+	{
+		// 新建的文件名 = temp;
+		ShowSaveAnother = 0;
+	}
+}
+
 void DrawShowPictureRegion()
 {
 	// 图片显示区域
@@ -698,8 +725,16 @@ void DrawShowPictureRegion()
 	double bmph = winheight - fontHeight * 10;
 	double buttonw = winwidth / 15;
 	double buttonh = fontHeight * 2.3;
-	SetPenColor("Gray");
 	SetPenSize(2);
+
+	if (pictures[cur_index].name)
+	{
+		SetPenColor("Black");
+		drawLabel(bmpx, bmpy + bmph + fontHeight * 0.8, "正在显示的图片是: ");
+		SetPenColor("Blue");
+		drawLabel(bmpx + TextStringWidth("正在显示的图片是: "), bmpy + bmph + fontHeight * 0.8, pictures[cur_index].name);
+	}
+	SetPenColor("Gray");
 	drawBox(bmpx, bmpy, bmpw, bmph, 1, "bmp图片显示区域", 'C', "Red");
 	printf("%d\n", GetPenSize());
 	// 设置图片显示的中心位置
