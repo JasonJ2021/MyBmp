@@ -67,7 +67,7 @@ void displayData(int i );
 void clearPicture(int i );
 
 
-void readInPicture(string s);
+int readInPicture(string s);
 
 void right_Rotate_Picture(int i );
 
@@ -112,3 +112,5 @@ void expandPicture(int i ,int max_width , int max_height);
 void shrinkPicture(int i );
 
 void retrievePicture(int i);
+
+int findIndex(string name);

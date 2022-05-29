@@ -13,7 +13,6 @@ static int picture_middle_x = 0;
 static int picture_middle_y = 0;
 int picture_index = 0;
 
-
 struct FrameBuffer
 {
     int windowsWidth, windowsHeight; // 窗口大小
@@ -109,29 +108,32 @@ void displayFillWithColor(float r, float g, float b)
     }
 }
 
-void readInPicture(string s)
+int readInPicture(string s)
 {
-    for(int i = 0 ; i < picture_index;i++){
-        if(strcmp(s,pictures[i].name) == 0){
-            return;
+    for (int i = 0; i < picture_index; i++)
+    {
+        if (strcmp(s, pictures[i].name) == 0)
+        {
+            return i;
         }
     }
     printf("read in a picture !\n");
     int n;
     pictures[picture_index].data = stbi_load(s, &pictures[picture_index].picture_width, &pictures[picture_index].picture_height, &n, 4);
-    strcpy(pictures[picture_index].name , s);
+    strcpy(pictures[picture_index].name, s);
     picture_index++;
+    return picture_index - 1;
 }
 
 void displayPicture(int i)
 {
-    int x = picture_middle_x - pictures[i].picture_width/2;
-    int y = picture_middle_y - pictures[i].picture_height/2;
-    displayViewPort(x, y, pictures[i].picture_width,pictures[i].picture_height);
+    int x = picture_middle_x - pictures[i].picture_width / 2;
+    int y = picture_middle_y - pictures[i].picture_height / 2;
+    displayViewPort(x, y, pictures[i].picture_width, pictures[i].picture_height);
     displayData(i);
 }
 
-void resizePicture(int i ,int output_width, int output_height)
+void resizePicture(int i, int output_width, int output_height)
 {
     unsigned char *temp_data = (unsigned char *)malloc(output_width * output_height * 4);
     stbir_resize_uint8(pictures[i].data, frameBuffer.portWidth, frameBuffer.portHeight, 0, temp_data, output_width, output_height, 0, 4);
@@ -141,7 +143,7 @@ void resizePicture(int i ,int output_width, int output_height)
     pictures[i].picture_height = output_height;
 }
 
-void displayData(int i )
+void displayData(int i)
 {
     // 步长，每跨一步相当于往上一行
     int stride = frameBuffer.windowsWidth * 4;
@@ -190,15 +192,15 @@ void displayData(int i )
     }
 }
 
-void clearPicture(int i )
+void clearPicture(int i)
 {
-    int x = picture_middle_x - pictures[i].picture_width/2;
-    int y = picture_middle_y - pictures[i].picture_height/2;
+    int x = picture_middle_x - pictures[i].picture_width / 2;
+    int y = picture_middle_y - pictures[i].picture_height / 2;
     displayViewPort(x, y, pictures[i].picture_width, pictures[i].picture_height);
     displayFillWithColor(154, 154, 154);
 }
 
-void left_Rotate_Picture(int i )
+void left_Rotate_Picture(int i)
 {
     unsigned char *temp_data = (unsigned char *)malloc(pictures[i].picture_width * pictures[i].picture_height * 4);
 
@@ -212,7 +214,7 @@ void left_Rotate_Picture(int i )
     {
         for (int col = 0; col < pictures[i].picture_width; ++col)
         {
-            src_ptr = data + row * src_stride + col * 4;
+            src_ptr = pictures[i].data + row * src_stride + col * 4;
             dst_ptr = temp_data + dst_stride * (pictures[i].picture_width - col - 1) + row * 4;
             dst_ptr[0] = src_ptr[0];
             dst_ptr[1] = src_ptr[1];
@@ -228,7 +230,7 @@ void left_Rotate_Picture(int i )
     pictures[i].picture_width = temp;
 }
 
-void right_Rotate_Picture(int i )
+void right_Rotate_Picture(int i)
 {
     unsigned char *temp_data = (unsigned char *)malloc(pictures[i].picture_width * pictures[i].picture_height * 4);
 
@@ -258,12 +260,12 @@ void right_Rotate_Picture(int i )
     pictures[i].picture_width = temp;
 }
 
-void save_Picture(string s , int i)
+void save_Picture(string s, int i)
 {
     stbi_write_bmp(s, pictures[i].picture_width, pictures[i].picture_height, 4, pictures[i].data, 0);
 }
 
-void cut_Picture(int i , int x_downLeft , int y_downLeft , int x_upRight , int y_upRight)
+void cut_Picture(int i, int x_downLeft, int y_downLeft, int x_upRight, int y_upRight)
 {
     if (x_downLeft > x_upRight)
     {
@@ -309,53 +311,73 @@ void cut_Picture(int i , int x_downLeft , int y_downLeft , int x_upRight , int y
 
 /**
  * @brief 设置图片显示的中心位置x
- * 
- * @param x 
+ *
+ * @param x
  */
-void set_picture_middle_x(int x){
+void set_picture_middle_x(int x)
+{
     picture_middle_x = x;
-    printf("%d\n" , picture_middle_x);
+    printf("%d\n", picture_middle_x);
 }
 
 /**
  * @brief 设置图片显示的中心位置y
- * 
- * @param y 
+ *
+ * @param y
  */
-void set_picture_middle_y(int y){
+void set_picture_middle_y(int y)
+{
     picture_middle_y = y;
-    printf("%d\n" , picture_middle_x);
+    printf("%d\n", picture_middle_x);
 }
 
-
-int getNextIndex(int index){
-    if(index + 1 >= picture_index){
+int getNextIndex(int index)
+{
+    if (index + 1 >= picture_index)
+    {
         return 0;
     }
     return index + 1;
 }
 
-int getPrevIndex(int index){
-    if(index - 1 < 0){
+int getPrevIndex(int index)
+{
+    if (index - 1 < 0)
+    {
         return picture_index - 1;
     }
     return index - 1;
 }
 
-
-void expandPicture(int i ,int max_width , int max_height){
-    if((int)(pictures[i].picture_height*1.1) > max_height)return;
-    if((int)(pictures[i].picture_width*1.1) > max_width)return;
-    resizePicture(i,pictures[i].picture_width*1.1 , pictures[i].picture_height*1.1);
+void expandPicture(int i, int max_width, int max_height)
+{
+    if ((int)(pictures[i].picture_height * 1.1) > max_height)
+        return;
+    if ((int)(pictures[i].picture_width * 1.1) > max_width)
+        return;
+    resizePicture(i, pictures[i].picture_width * 1.1, pictures[i].picture_height * 1.1);
 }
 
-void shrinkPicture(int i ){
-    resizePicture(i,pictures[i].picture_width*0.9 , pictures[i].picture_height*0.9);
+void shrinkPicture(int i)
+{
+    resizePicture(i, pictures[i].picture_width * 0.9, pictures[i].picture_height * 0.9);
 }
 
-void retrievePicture(int i){
-    int n ;
+void retrievePicture(int i)
+{
+    int n;
     stbi_image_free(pictures[i].data);
     pictures[i].data = stbi_load(pictures[i].name, &pictures[i].picture_width, &pictures[i].picture_height, &n, 4);
 }
 
+int findIndex(string name)
+{
+    for (int i = 0; i < picture_index; i++)
+    {
+        if (!strcmp(pictures[i].name, name))
+        {
+            return i;
+        }
+    }
+    return -1;
+}
