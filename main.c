@@ -22,10 +22,10 @@ static char FileName[20][100] = {""};
 
 static double MouseX = 0;
 static double MouseY = 0;
-static int CurIndex = 0;	   // 当前显示图片的Index
+static int CurIndex = 0;	  // 当前显示图片的Index
 static int ShouldDisplay = 0; // 当前是否应该显示图片
-static int MaxWidth = 0;	   // 显示框宽度
-static int MaxHeight = 0;	   // 显示框高度
+static int MaxWidth = 0;	  // 显示框宽度
+static int MaxHeight = 0;	  // 显示框高度
 
 // 清屏函数，provided in libgraphics
 void DisplayClear(void);
@@ -102,8 +102,8 @@ void Main()
 	WinWidth = GetWindowWidth();
 	WinHeight = GetWindowHeight();
 	printf("窗口尺寸：%.2f %.2f\n", WinWidth, WinHeight);
-	displayViewPort(0, 0, displayGetWindowPixelWidth(), displayGetWindowPixelHeight());
-	displayFillWithColor(255, 255, 255);
+	DisplayViewPort(0, 0, DisplayGetWindowPixelWidth(), DisplayGetWindowPixelHeight());
+	DisplayFillWithColor(255, 255, 255);
 	// 自定义颜色
 	DefineColor("GrayBlue", 0.57, 0.71, 0.83);
 
@@ -149,40 +149,40 @@ void Main()
 	// registerTimerEvent(timerCallback);
 	// 15ms为周期，近似于60FPS
 	// // startTimer(0, 15);
-	// displayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
+	// DisplayViewPort(0,0,displayGetWindowPixelWidth(),displayGetWindowPixelHeight());
 
 	// // 初始化窗口设置背景颜色为白色
-	// displayFillWithColor(255,255,255);
+	// DisplayFillWithColor(255,255,255);
 	// printf("win_width = %d , win_height = %d\n" , WinWidth , WinHeight);
-	// set_picture_middle_x(inchXToPixelX(WinWidth/2));
-	// set_picture_middle_y(inchYToPixelY(WinHeight/2));
-	// readInPicture("./resource/2.bmp");
-	// displayPicture(0);
-	// clearPicture(0);
-	// readInPicture("./resource/2.bmp");
-	// right_Rotate_Picture(0);
-	// right_Rotate_Picture();
-	// readInPicture("./resource/1.bmp");
-	// displayPicture(0);
-	// clearPicture(0);
-	// displayPicture(1);
-	// clearPicture(1);
+	// SetPictureMiddleX(inchXToPixelX(WinWidth/2));
+	// SetPictureMiddleY(inchYToPixelY(WinHeight/2));
+	// ReadInPicture("./resource/2.bmp");
+	// DisplayPicture(0);
+	// ClearPicture(0);
+	// ReadInPicture("./resource/2.bmp");
+	// RightRotatePicture(0);
+	// RightRotatePicture();
+	// ReadInPicture("./resource/1.bmp");
+	// DisplayPicture(0);
+	// ClearPicture(0);
+	// DisplayPicture(1);
+	// ClearPicture(1);
 	//==============================cur part ==========================//
-	// cut_Picture(0 , 0,0,200,200);
-	// displayPicture(0);
+	// CutPicture(0 , 0,0,200,200);
+	// DisplayPicture(0);
 
 	//==============================save part =========================//
-	// save_Picture("./resource/saved.bmp");
-	// displayPicture("./resource/2.bmp");
+	// SavePicture("./resource/saved.bmp");
+	// DisplayPicture("./resource/2.bmp");
 
 	//==============================resize part =======================//
-	// displayPicture("./resource/2.bmp");
-	// clearPicture();
-	// resizePicture(500 ,500);
-	// displayPicture();
-	// clearPicture();
-	// resizePicture(100 ,100);
-	// displayData();
+	// DisplayPicture("./resource/2.bmp");
+	// ClearPicture();
+	// ResizePicture(500 ,500);
+	// DisplayPicture();
+	// ClearPicture();
+	// ResizePicture(100 ,100);
+	// DisplayData();
 }
 
 //显示函数
@@ -216,14 +216,16 @@ void ShowBMP()
 								   "保存 | Ctrl-S",
 								   "另存 | Ctrl-Q",
 								   "退出 | Ctrl-E"};
-	static char *menuListTool[] = {"工具",
-								   "放大 | Ctrl-A",
-								   "缩小 | Ctrl-B",
-								   "左旋 | Ctrl-X",
-								   "右旋 | Ctrl-Y",
-								   "复位 | Ctrl-R",
-								   "裁剪 | Ctrl-T",
-								   "压缩 | Ctrl-Z",};
+	static char *menuListTool[] = {
+		"工具",
+		"放大 | Ctrl-A",
+		"缩小 | Ctrl-B",
+		"左旋 | Ctrl-X",
+		"右旋 | Ctrl-Y",
+		"复位 | Ctrl-R",
+		"裁剪 | Ctrl-T",
+		"压缩 | Ctrl-Z",
+	};
 	static char *menuListHelp[] = {"帮助",
 								   "使用方法 | Ctrl-U",
 								   "关于"};
@@ -266,7 +268,7 @@ void ShowBMP()
 	{
 		if (ShouldDisplay)
 		{
-			save_Picture(pictures[CurIndex].name, CurIndex);
+			SavePicture(pictures[CurIndex].name, CurIndex);
 		}
 	}
 	if (selection == 4) // 另存为
@@ -291,7 +293,7 @@ void ShowBMP()
 	{
 		if (ShouldDisplay)
 		{
-			expandPicture(CurIndex, MaxWidth, MaxHeight);
+			ExpandPicture(CurIndex, MaxWidth, MaxHeight);
 		}
 	}
 
@@ -300,7 +302,7 @@ void ShowBMP()
 	{
 		if (ShouldDisplay)
 		{
-			shrinkPicture(CurIndex);
+			ShrinkPicture(CurIndex);
 		}
 	}
 
@@ -309,7 +311,7 @@ void ShowBMP()
 	{
 		if (ShouldDisplay)
 		{
-			left_Rotate_Picture(CurIndex);
+			LeftRotatePicture(CurIndex);
 		}
 	}
 
@@ -318,7 +320,7 @@ void ShowBMP()
 	{
 		if (ShouldDisplay)
 		{
-			right_Rotate_Picture(CurIndex);
+			RightRotatePicture(CurIndex);
 		}
 	}
 	// 复位
@@ -326,7 +328,7 @@ void ShowBMP()
 	{
 		if (ShouldDisplay)
 		{
-			retrievePicture(CurIndex);
+			RetrievePicture(CurIndex);
 		}
 	}
 
@@ -344,7 +346,7 @@ void ShowBMP()
 	{
 		if (ShouldDisplay)
 		{
-			save_Picture(pictures[CurIndex].name, CurIndex);
+			SavePicture(pictures[CurIndex].name, CurIndex);
 			char compressed_name[200];
 			memset(compressed_name, 0, 200);
 			strncpy(compressed_name, pictures[CurIndex].name, 128);
@@ -597,16 +599,16 @@ void StartGUI()
 		//	//printf("button %d %s %s\n", Uid[0]+k, name, FileName[k]);
 		// }
 
-		//for (k = 0; k < 12; k++)
+		// for (k = 0; k < 12; k++)
 		//{
 		//	char name[128];
 		//	strcpy(name, FileName[k]);
 		//	if(button(GenUIID(k), x + w * 1.1, (y + h * 1.8) - k * h * 0.6, w * 0.8, h * 0.5, name)){
 		//		// 显示点击的图片
-		//		
+		//
 		//	}
 		//	printf("button %s %s\n", name, FileName[k]);
-		//}
+		// }
 
 		for (k = 0; k < 12; k++)
 		{
@@ -617,8 +619,10 @@ void StartGUI()
 				selectedLabel1 = NULL;
 				selectedLabel2 = NULL;
 				ShowGUI = 1;
-				
-				char name_full[156] = "./resource/";
+
+				char name_full[156];
+				strcpy(name_full, BasePatch);
+				strcat(name_full, "/");
 				strcat(name_full, name);
 				char *temp;
 				// 需要判断是否含有后缀.huf
@@ -634,9 +638,10 @@ void StartGUI()
 				}
 				else
 				{
-					readInPicture(name_full);
+					ReadInPicture(name_full);
 					int i = -1;
-					if ((i = findIndex(name_full)) >= 0) {
+					if ((i = FindIndex(name_full)) >= 0)
+					{
 						CurIndex = i;
 					}
 					ShouldDisplay = 1;
@@ -645,8 +650,6 @@ void StartGUI()
 
 				printf("button %s %s\n", name, FileName[k]);
 			}
-
-
 		}
 	}
 	if (button(GenUIID(0), x, y, w, h, "进入显示图片界面"))
@@ -788,7 +791,7 @@ void DrawShowSaveAnother() // 另存为文件名编辑框
 		ShowSaveAnother = 0;
 		if (ShouldDisplay)
 		{
-			save_Picture(temp, CurIndex);
+			SavePicture(temp, CurIndex);
 		}
 	}
 }
@@ -832,7 +835,7 @@ void DrawShowCropBox()
 		printf("x1=%d y1=%d x2=%d y2=%d\n", x1_d, y1_d, x2_d, y2_d);
 		if (ShouldDisplay)
 		{
-			cut_Picture(CurIndex, x1_d, y1_d, x2_d, y2_d);
+			CutPicture(CurIndex, x1_d, y1_d, x2_d, y2_d);
 		}
 		ShowCropBox = 0;
 	}
@@ -870,12 +873,12 @@ void DrawShowPictureRegion()
 	MaxHeight = inchXToPixelX(bmph);
 	MaxWidth = inchYToPixelY(bmpw);
 	// 设置图片显示的中心位置
-	set_picture_middle_x(inchXToPixelX(bmpx + bmpw / 2));
-	set_picture_middle_y(inchYToPixelY(bmpy + bmph / 2));
+	SetPictureMiddleX(inchXToPixelX(bmpx + bmpw / 2));
+	SetPictureMiddleY(inchYToPixelY(bmpy + bmph / 2));
 	// 如果需要显示图片，在这里显示图片！
 	if (ShouldDisplay)
 	{
-		displayPicture(CurIndex);
+		DisplayPicture(CurIndex);
 	}
 	// 快捷键小图标
 	// 上一张
@@ -883,7 +886,7 @@ void DrawShowPictureRegion()
 	if (button(GenUIID(0), bmpx, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 切换显示上一张图片
-		CurIndex = getPrevIndex(CurIndex);
+		CurIndex = GetPrevIndex(CurIndex);
 	}
 	SetPenColor("Black");
 	MovePen(bmpx + buttonw * 0.2, fontHeight * 3 + buttonh / 2);
@@ -895,7 +898,7 @@ void DrawShowPictureRegion()
 	if (button(GenUIID(0), WinWidth - buttonw, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 切换显示下一张图片
-		CurIndex = getNextIndex(CurIndex);
+		CurIndex = GetNextIndex(CurIndex);
 	}
 	MovePen(WinWidth - buttonw * 0.2, fontHeight * 3 + buttonh / 2);
 	DrawLine(-buttonw * 0.5, -buttonh * 0.2);
@@ -906,7 +909,7 @@ void DrawShowPictureRegion()
 	if (button(GenUIID(0), WinWidth - buttonw * 4, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 缩小图片
-		shrinkPicture(CurIndex);
+		ShrinkPicture(CurIndex);
 	}
 	MovePen(WinWidth - buttonw * 4 + buttonw * 0.4, fontHeight * 3.1 + buttonh / 2);
 	SetPenSize(2);
@@ -917,7 +920,7 @@ void DrawShowPictureRegion()
 	if (button(GenUIID(0), bmpx + buttonw * 4, fontHeight * 3.1, buttonw, buttonh, ""))
 	{
 		// 放大图片
-		expandPicture(CurIndex, MaxWidth, MaxHeight);
+		ExpandPicture(CurIndex, MaxWidth, MaxHeight);
 	}
 	MovePen(bmpx + buttonw * 4 + buttonw * 0.35, fontHeight * 3.1 + buttonh / 2);
 	SetPenSize(2);
@@ -944,7 +947,9 @@ void DrawShowFilesList()
 		strcpy(name, FileName[k]);
 		if (button(GenUIID(k), x, y - fontHeight * 2 - k * h * 1.2, w, h, name))
 		{
-			char name_full[156] = "./resource/";
+			char name_full[156];
+			strcpy(name_full, BasePatch);
+			strcat(name_full, "/");
 			strcat(name_full, name);
 			char *temp;
 			// 需要判断是否含有后缀.huf
@@ -960,9 +965,10 @@ void DrawShowFilesList()
 			}
 			else
 			{
-				readInPicture(name_full);
+				ReadInPicture(name_full);
 				int i = -1;
-				if((i = findIndex(name_full) )>= 0){
+				if ((i = FindIndex(name_full)) >= 0)
+				{
 					CurIndex = i;
 				}
 				ShouldDisplay = 1;
@@ -980,7 +986,7 @@ void DrawShowUseWay()
 	double y = WinHeight - WinHeight / 5;
 
 	SetPenColor("Black");
-	drawLabel(x, y, "注意事项1：默认bmp文件路径为../../bmp；若需修改，在文本框中修改后，点击右边【确认修改】按钮。");
+	drawLabel(x, y, "注意事项1：默认bmp文件路径为./resource/；若需修改，在文本框中修改后，点击右边【确认修改】按钮。");
 	drawLabel(x, y -= fontHeight * 1.5, "注意事项2： 由于显示页面限制，文件夹中bmp文件数目不能大于12。");
 }
 
