@@ -17,7 +17,7 @@ static int ShowMoreButtons = 0; // 显示更多按钮
 static int ShowFilesList = 0;
 static int ShowCropBox = 0;
 static int ShowSaveAnother = 0; // 另存为
-static char BasePatch[100] = "./resource";
+static char BasePatch[100] = "../resource";
 static char FileName[20][100] = {""};
 static int ChangeGUI = 0;
 static double MouseX = 0;
@@ -45,18 +45,28 @@ void StartGUI(void);
 // 帮助界面
 void ShowHelp(void);
 
-//
+// 搜素文件夹中的文件
 void SearchFiles(char *BasePath);
 
+// 显示另存为界面
 void DrawShowSaveAnother();
+
+// 显示BMP图片显示界面
 void DrawShowPictureRegion();
+
+// 显示裁剪界面
 void DrawShowCropBox();
+
+// 显示文件列表
 void DrawShowFilesList(void);
 
+// 显示修改打开路径的文本框
 void DrawEditText(void);
 
+// 显示帮助菜单的关于界面
 void DrawShowAbout(void);
 
+// 显示帮助界面的使用方法界面
 void DrawShowUseWay(void);
 
 // 用户的字符事件响应函数
@@ -86,9 +96,10 @@ void MouseEventProcess(int x, int y, int button, int event)
 void Main()
 {
 	// 打开控制台，方便用printf/scanf输出/入变量信息，方便调试
-	InitConsole();
+	//InitConsole();
 	//关闭控制台，仅在VS Code环境下使用，若为VS2019或VS2017环境，请注释掉下面这行代码
 	// FreeConsole();
+
 	// 初始化窗口
 	SetWindowTitle("BMP图片显示器");
 	// SetWindowSize(13.39, 7.48);  // 如果屏幕尺寸不够，则按比例缩小
@@ -124,7 +135,7 @@ void Main()
 	// WinHeight = GetFullScreenWidth();
 	// SetWindowSize(WinWidth, WinHeight);
 	// int x , y , n ;
-	// unsigned char *data = stbi_load("./resource/1.bmp" , &x , &y , &n , 4);
+	// unsigned char *data = stbi_load(".../resource/1.bmp" , &x , &y , &n , 4);
 	// int size = sizeof(data);
 	// InitConsole();
 	// InitGraphics();
@@ -159,13 +170,13 @@ void Main()
 	// printf("win_width = %d , win_height = %d\n" , WinWidth , WinHeight);
 	// SetPictureMiddleX(inchXToPixelX(WinWidth/2));
 	// SetPictureMiddleY(inchYToPixelY(WinHeight/2));
-	// ReadInPicture("./resource/2.bmp");
+	// ReadInPicture("../resource/2.bmp");
 	// DisplayPicture(0);
 	// ClearPicture(0);
-	// ReadInPicture("./resource/2.bmp");
+	// ReadInPicture("../resource/2.bmp");
 	// RightRotatePicture(0);
 	// RightRotatePicture();
-	// ReadInPicture("./resource/1.bmp");
+	// ReadInPicture("../resource/1.bmp");
 	// DisplayPicture(0);
 	// ClearPicture(0);
 	// DisplayPicture(1);
@@ -175,11 +186,11 @@ void Main()
 	// DisplayPicture(0);
 
 	//==============================save part =========================//
-	// SavePicture("./resource/saved.bmp");
-	// DisplayPicture("./resource/2.bmp");
+	// SavePicture("../resource/saved.bmp");
+	// DisplayPicture("../resource/2.bmp");
 
 	//==============================resize part =======================//
-	// DisplayPicture("./resource/2.bmp");
+	// DisplayPicture("../resource/2.bmp");
 	// ClearPicture();
 	// ResizePicture(500 ,500);
 	// DisplayPicture();
@@ -283,7 +294,7 @@ void ShowBMP()
 	}
 	if (selection == 5) // 选择退出
 	{
-		ExitGraphics(-1);
+		ExitGraphics();
 	}
 
 	// 工具菜单
@@ -399,6 +410,16 @@ void ShowBMP()
 	{
 		DrawShowCropBox();
 	}
+
+	if (ShowUseWay)
+	{
+		DrawShowUseWay();
+	}
+	if (ShowAbout)
+	{
+		DrawShowAbout();
+	}
+
 	// 返回按钮
 	SetPenSize(1);
 	if (button(GenUIID(0), 0, fontHeight * 4, WinWidth / 12, fontHeight * 2.5, "返回"))
@@ -461,8 +482,8 @@ void StartGUI()
 	}
 	if (selection == 2)
 	{
-		ShowUseWay = 1;
-		ShowAbout = 0;
+		ShowUseWay = 0;
+		ShowAbout = 1;
 		ShowGUI = 2;
 	}
 	if (ShowUseWay)
@@ -533,7 +554,7 @@ void StartGUI()
 					}
 					ShouldDisplay = 1;
 				}
-				// ./resource/2.bmp
+				// ../resource/2.bmp
 
 				printf("button %s %s\n", name, FileName[k]);
 			}
@@ -566,7 +587,7 @@ void DrawEditText(void)
 	double x = WinWidth / 2 - w; // x坐标基准
 	double y = WinHeight / 2 - fontHeight + h * 3;
 
-	static char temp[100] = "./resource";
+	static char temp[100] = "../resource";
 
 	static char results[200] = "";
 
@@ -860,6 +881,13 @@ void DrawShowFilesList()
 				strncpy(uncompressed_name, name_full, temp - name_full);
 				printf("file name = %s\n", uncompressed_name);
 				uncompress(name_full, uncompressed_name);
+				ReadInPicture(uncompressed_name);
+				int i = -1;
+				if ((i = FindIndex(name_full)) >= 0)
+				{
+					CurIndex = i;
+				}
+				ShouldDisplay = 1;
 			}
 			else
 			{
@@ -871,7 +899,7 @@ void DrawShowFilesList()
 				}
 				ShouldDisplay = 1;
 			}
-			// ./resource/2.bmp
+			// ../resource/2.bmp
 		}
 		printf("button %s %s\n", name, FileName[k]);
 	}
@@ -879,22 +907,28 @@ void DrawShowFilesList()
 
 void DrawShowUseWay()
 {
-	double fontHeight = GetFontHeight(); //字高
-	double x = WinWidth / 5;
-	double y = WinHeight - WinHeight / 5;
+	double fontHeight = GetFontHeight() * 1.2; //字高
+	double x = WinWidth / 10;
+	double y = WinHeight - WinHeight / 6;
 
 	SetPenColor("Black");
-	drawLabel(x, y, "注意事项1：默认bmp文件路径为./resource/；若需修改，在文本框中修改后，点击右边【确认修改】按钮。");
-	drawLabel(x, y -= fontHeight * 1.5, "注意事项2： 由于显示页面限制，文件夹中bmp文件数目不能大于12。");
+	drawLabel(x, y, "注意事项1：默认bmp文件路径为../resource/；若需修改，在文本框中修改后，点击右边【确认修改】按钮。");
+	drawLabel(x, y -= fontHeight * 1.5, "注意事项2： 由于显示页面限制，文件夹中bmp文件数目不能大于10。");
+	drawLabel(x, y -= fontHeight * 1.5, "注意事项3：文件夹相对路径名/文件名请用英文字符。 ");
+	drawLabel(x, y -= fontHeight * 1.5, "注意事项4： ");
+
+
 }
 
 void DrawShowAbout()
 {
-	double fontHeight = GetFontHeight(); //字高
-	double x = WinWidth / 4;
-	double y = WinHeight - WinHeight / 4;
+	double fontHeight = GetFontHeight() * 1.2; //字高
+	double x = WinWidth / 10;
+	double y = WinHeight - WinHeight / 6;
 	SetPenColor("Black");
-	drawLabel(x, y, "本软件名称为BMP图片显示器，为2022年浙江大学程序设计专题课程大作业。");
+	drawLabel(x, y -= fontHeight * 1.5, "本软件名称为BMP图片显示器，为2022年浙江大学程序设计专题课程大作业。");
+	drawLabel(x, y -= fontHeight * 1.5, "本软件可以实现对BMP格式图片的放大/缩小/左旋/右旋/复位/裁剪/压缩/解压缩等功能。");
+
 }
 
 void SearchFiles(char *BasePath)
